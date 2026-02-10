@@ -5,7 +5,7 @@ import sys
 app = QApplication(sys.argv)
 
 loader = QUiLoader()
-window = loader.load("main.ui")
+window = loader.load("src/ui/main.ui")
 
 window.show()
 
