@@ -1,0 +1,19 @@
+# PyCharm settings - НЕ КОММИТИТЬ!
+.idea/
+
+# Virtual environments - НЕ КОММИТИТЬ!
+.venv/
+venv/
+env/
+
+# Python cache - НЕ КОММИТИТЬ!
+__pycache__/
+*.pyc
+
+# OS files - НЕ КОММИТИТЬ!
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ваши .ui файлы - КОММИТИТЬ! (поэтому НЕ в .gitignore)
+# *.ui  ← ЗАКОММЕНТИРОВАНО или УДАЛИТЬ!
