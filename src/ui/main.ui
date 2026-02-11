@@ -18,7 +18,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,2">
       <item>
-       <widget class="PlotWidget" name="widget" native="true"/>
+       <widget class="QWidget" name="widget" native="true"/>
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout" stretch="4,1,2">
@@ -91,8 +91,171 @@
            </sizepolicy>
           </property>
           <property name="title">
-           <string>Отрисовка графика</string>
+           <string>Отрисовка поверхностей</string>
           </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0" colspan="4">
+            <widget class="QComboBox" name="comboBox">
+             <item>
+              <property name="text">
+               <string>Функция Растринга</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Экли</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция сферы</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Розенброка</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Била</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Гольдшейна-Прайса</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Бута</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Букина N 6</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Матьяса</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Леви N 13</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Химмельблау</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция трёхгорбого верблюда</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Изома</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция &quot;крест на подносе&quot;</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция &quot;подставка для яиц&quot;</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Табличная функция Хольдера</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция МакКормика</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Шаффера N2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Шаффера N4</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция Стыбинского-Танга</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Xmin</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEdit"/>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>Xmax</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QLineEdit" name="lineEdit_2"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Ymin</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineEdit_3"/>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Ymax</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
+            <widget class="QLineEdit" name="lineEdit_4"/>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Точки</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="lineEdit_5"/>
+           </item>
+           <item row="3" column="2" colspan="2">
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>Отрисовать</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -113,14 +276,6 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>PlotWidget</class>
-   <extends>QWidget</extends>
-   <header>pyqtgraph</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
