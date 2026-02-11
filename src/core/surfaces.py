@@ -24,6 +24,9 @@ def levi_n13(X,Y):
 def himmelblau(X,Y):
     return (X**2+Y-11)**2 + (X + Y**2 - 7)**2
 
+def three_hump_camel(X,Y):
+    return 2*X**2 - 1.05*X**4 + X**6/6 + X*Y + Y**2
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -32,5 +35,6 @@ surface_functions = {
     "Функция Букина N 6": bukin_n6,
     "Функция Матьяса": matyas,
     "Функция Леви N 13": levi_n13,
-    "Функция Химмельблау": himmelblau
+    "Функция Химмельблау": himmelblau,
+    "Функция трёхгорбого верблюда": three_hump_camel
 }
