@@ -15,10 +15,14 @@ def goldstein_price(X,Y):
 def bukin_n6(X,Y):
     return 100*np.sqrt(np.abs(Y-0.01*X**2)) + 0.01*np.abs(X+10)
 
+def matyas(X,Y):
+    return 0.26*(X**2+Y**2) - 0.48*X*Y
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
     "Функция Экли": ackley,
     "Функция Гольдшейна-Прайса": goldstein_price,
-    "Функция Букина N 6": bukin_n6
+    "Функция Букина N 6": bukin_n6,
+    "Функция Матьяса": matyas
 }
