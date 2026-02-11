@@ -6,7 +6,11 @@ def beale(X, Y):
 def booth(X, Y):
     return (X + 2*Y - 7)**2 + (2*X + Y - 5)**2
 
+def ackley(X,Y):
+    return -20*np.exp(-0.2*np.sqrt(0.5*(X*X + Y*Y))) - np.exp(0.5*(np.cos(2*np.pi*X) + np.cos(2*np.pi*Y))) + np.exp(1) + 20
+
 surface_functions = {
     "Функция Била": beale,
-    "Функция Бута": booth
+    "Функция Бута": booth,
+    "Функция Экли": ackley
 }
