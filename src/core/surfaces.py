@@ -30,6 +30,9 @@ def three_hump_camel(X,Y):
 def easom(X,Y):
     return -np.cos(X)*np.cos(Y)*np.exp(-((X-np.pi)**2+(Y-np.pi)**2))
 
+def cross_in_tray(X, Y):
+    return -0.0001*(np.abs(np.sin(X)*np.sin(Y)*np.exp(np.abs(100-(np.sqrt(X*X+Y*Y))/np.pi)))+1)**0.1
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -40,5 +43,6 @@ surface_functions = {
     "Функция Леви N 13": levi_n13,
     "Функция Химмельблау": himmelblau,
     "Функция трёхгорбого верблюда": three_hump_camel,
-    "Функция Изома": easom
+    "Функция Изома": easom,
+    "Функция \"крест на подносе\"": cross_in_tray
 }
