@@ -34,7 +34,7 @@ def cross_in_tray(X, Y):
     return -0.0001*(np.abs(np.sin(X)*np.sin(Y)*np.exp(np.abs(100-(np.sqrt(X*X+Y*Y))/np.pi)))+1)**0.1
 
 def eggholder(X,Y):
-    return -(Y+47)*np.sin(np.sqrt(np.abs(X/2+(Y+47)))) - X*np.sin(np.sqrt(np.abs(X+(Y+47))))
+    return -(Y+47)*np.sin(np.sqrt(np.abs(X/2+(Y+47)))) - X*np.sin(np.sqrt(np.abs(X-(Y+47))))
 
 def mccormick(X,Y):
     return np.sin(X+Y)+(X-Y)**2-1.5*X+2.5*Y+1

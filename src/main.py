@@ -27,8 +27,11 @@ def update_surface():
     surface, Z = generate_surface(func, xmin, xmax, ymin, ymax, npoints)
     if surface_item:
         view.removeItem(surface_item)
+    Z_center = (Z.max() + Z.min()) / 2
+    surface.translate(0,0,-Z_center)
     if zscale == 0:
-        zscale = 10 / Z.max()
+        z_abs = max(abs(Z.min()), abs(Z.max()))
+        zscale = 10 / z_abs
     surface.scale(1, 1, zscale)
     view.addItem(surface)
     surface_item = surface
