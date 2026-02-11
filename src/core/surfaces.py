@@ -12,9 +12,13 @@ def ackley(X,Y):
 def goldstein_price(X,Y):
     return (1 + (X+Y+1)**2*(19-14*X+3*X**2-14*Y+6*X*Y+3*Y**2))*(30+(2*X-3*Y)**2*(18-32*X+12*X**2+48*Y-36*X*Y+27*Y**2))
 
+def bukin_n6(X,Y):
+    return 100*np.sqrt(np.abs(Y-0.01*X**2)) + 0.01*np.abs(X+10)
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
     "Функция Экли": ackley,
-    "Функция Гольдшейна-Прайса": goldstein_price
+    "Функция Гольдшейна-Прайса": goldstein_price,
+    "Функция Букина N 6": bukin_n6
 }
