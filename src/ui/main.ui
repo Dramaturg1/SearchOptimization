@@ -18,7 +18,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,2">
       <item>
-       <widget class="QWidget" name="widget" native="true"/>
+       <widget class="PlotWidget" name="widget" native="true"/>
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout" stretch="4,1,2">
@@ -113,6 +113,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header>pyqtgraph</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
