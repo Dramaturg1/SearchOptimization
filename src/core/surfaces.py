@@ -42,6 +42,12 @@ def mccormick(X,Y):
 def schaffer_n2(X,Y):
     return 0.5+((np.sin(X*X-Y*Y))**2-0.5)/(1+0.001*(X*X+Y*Y))**2
 
+def schaffer_n4(X,Y):
+    return 0.5+(np.cos((np.sin(np.abs(X*X-Y*Y))))**2-0.5)/(1+0.001*(X*X+Y*Y))**2
+
+def holder(X,Y):
+    return -np.abs(np.sin(X)*np.cos(Y)*np.exp(np.abs(1-np.sqrt(X*X+Y*Y)/np.pi)))
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -56,5 +62,7 @@ surface_functions = {
     "Функция \"крест на подносе\"": cross_in_tray,
     "Функция \"подставка для яиц\"": eggholder,
     "Функция МакКормика": mccormick,
-    "Функция Шаффера N2": schaffer_n2
+    "Функция Шаффера N2": schaffer_n2,
+    "Функция Шаффера N4": schaffer_n4,
+    "Табличная функция Хольдера": holder
 }
