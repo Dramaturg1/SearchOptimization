@@ -36,6 +36,12 @@ def cross_in_tray(X, Y):
 def eggholder(X,Y):
     return -(Y+47)*np.sin(np.sqrt(np.abs(X/2+(Y+47)))) - X*np.sin(np.sqrt(np.abs(X+(Y+47))))
 
+def mccormick(X,Y):
+    return np.sin(X+Y)+(X-Y)**2-1.5*X+2.5*Y+1
+
+def schaffer_n2(X,Y):
+    return 0.5+((np.sin(X*X-Y*Y))**2-0.5)/(1+0.001*(X*X+Y*Y))**2
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -48,5 +54,7 @@ surface_functions = {
     "Функция трёхгорбого верблюда": three_hump_camel,
     "Функция Изома": easom,
     "Функция \"крест на подносе\"": cross_in_tray,
-    "Функция \"подставка для яиц\"": eggholder
+    "Функция \"подставка для яиц\"": eggholder,
+    "Функция МакКормика": mccormick,
+    "Функция Шаффера N2": schaffer_n2
 }
