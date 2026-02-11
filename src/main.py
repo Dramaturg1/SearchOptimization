@@ -3,31 +3,9 @@ import pyqtgraph.opengl as gl
 from src.core.CustomLoader import CustomLoader
 from core.plotter import generate_surface
 from core.surfaces import surface_functions
+from src.core.surfaces import surface_functions
 import sys
 import os
-
-from src.core.surfaces import surface_functions
-
-app = QApplication(sys.argv)
-
-loader = CustomLoader()
-current_dir = os.path.dirname(os.path.abspath(__file__))
-ui_path = os.path.join(current_dir, "ui", "main.ui")
-window = loader.load(ui_path)
-
-view = gl.GLViewWidget(parent=window.widget)
-layout = window.widget.layout()
-if layout is None:
-    layout = QVBoxLayout(window.widget)
-    window.widget.setLayout(layout)
-layout.addWidget(view)
-view.setCameraPosition(distance=30, elevation=30, azimuth=45)
-
-grid = gl.GLGridItem()
-grid.setSize(10, 10)
-grid.setSpacing(1, 1)
-view.addItem(grid)
-surface_item = None
 
 def update_surface():
     global surface_item
@@ -57,7 +35,30 @@ def update_surface():
 
 def reset_view():
     view.setCameraPosition(distance=30, elevation=30, azimuth=30)
+
+app = QApplication(sys.argv)
+
+loader = CustomLoader()
+current_dir = os.path.dirname(os.path.abspath(__file__))
+ui_path = os.path.join(current_dir, "ui", "main.ui")
+window = loader.load(ui_path)
+
+view = gl.GLViewWidget(parent=window.widget)
+layout = window.widget.layout()
+if layout is None:
+    layout = QVBoxLayout(window.widget)
+    window.widget.setLayout(layout)
+layout.addWidget(view)
+view.setCameraPosition(distance=30, elevation=30, azimuth=45)
+
+grid = gl.GLGridItem()
+grid.setSize(10, 10)
+grid.setSpacing(1, 1)
+view.addItem(grid)
+surface_item = None
+
 window.pushButton.clicked.connect(update_surface)
 
 window.show()
 sys.exit(app.exec())
+
