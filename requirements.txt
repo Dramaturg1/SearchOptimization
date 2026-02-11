@@ -1,2 +1,5 @@
 pyside6
 pyqtgraph
+numpy
+pyopengl
+matplotlib
