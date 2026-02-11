@@ -33,6 +33,9 @@ def easom(X,Y):
 def cross_in_tray(X, Y):
     return -0.0001*(np.abs(np.sin(X)*np.sin(Y)*np.exp(np.abs(100-(np.sqrt(X*X+Y*Y))/np.pi)))+1)**0.1
 
+def eggholder(X,Y):
+    return -(Y+47)*np.sin(np.sqrt(np.abs(X/2+(Y+47)))) - X*np.sin(np.sqrt(np.abs(X+(Y+47))))
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -44,5 +47,6 @@ surface_functions = {
     "Функция Химмельблау": himmelblau,
     "Функция трёхгорбого верблюда": three_hump_camel,
     "Функция Изома": easom,
-    "Функция \"крест на подносе\"": cross_in_tray
+    "Функция \"крест на подносе\"": cross_in_tray,
+    "Функция \"подставка для яиц\"": eggholder
 }
