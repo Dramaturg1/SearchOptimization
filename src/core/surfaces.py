@@ -21,6 +21,9 @@ def matyas(X,Y):
 def levi_n13(X,Y):
     return (np.sin(3*np.pi*X))**2 + (X-1)**2*(1+np.sin(3*np.pi*X))+(Y-1)**2*(1+np.sin(2*np.pi*Y)**2)
 
+def himmelblau(X,Y):
+    return (X**2+Y-11)**2 + (X + Y**2 - 7)**2
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -28,5 +31,6 @@ surface_functions = {
     "Функция Гольдшейна-Прайса": goldstein_price,
     "Функция Букина N 6": bukin_n6,
     "Функция Матьяса": matyas,
-    "Функция Леви N 13": levi_n13
+    "Функция Леви N 13": levi_n13,
+    "Функция Химмельблау": himmelblau
 }
