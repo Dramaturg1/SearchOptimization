@@ -2,7 +2,6 @@ from PySide6.QtWidgets import QApplication, QVBoxLayout
 import pyqtgraph.opengl as gl
 from src.core.CustomLoader import CustomLoader
 from core.plotter import generate_surface
-from core.surfaces import surface_functions
 from src.core.surfaces import surface_functions
 import sys
 import os
@@ -29,9 +28,12 @@ def update_surface():
         view.removeItem(surface_item)
     Z_center = (Z.max() + Z.min()) / 2
     surface.translate(0,0,-Z_center)
-    if zscale == 0:
-        z_abs = max(abs(Z.min()), abs(Z.max()))
-        zscale = 10 / z_abs
+    z_abs = max(abs(Z.min()), abs(Z.max()))
+    z_range = Z.max()-Z.min()
+    if z_range == 0:
+        zscale = 1.0
+    else:
+        zscale = 10 / z_range
     surface.scale(1, 1, zscale)
     view.addItem(surface)
     surface_item = surface
@@ -57,6 +59,7 @@ view.setCameraPosition(distance=30, elevation=30, azimuth=45)
 grid = gl.GLGridItem()
 grid.setSize(10, 10)
 grid.setSpacing(1, 1)
+grid.translate(0,0,-5)
 view.addItem(grid)
 surface_item = None
 
