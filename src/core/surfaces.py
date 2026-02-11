@@ -27,6 +27,9 @@ def himmelblau(X,Y):
 def three_hump_camel(X,Y):
     return 2*X**2 - 1.05*X**4 + X**6/6 + X*Y + Y**2
 
+def easom(X,Y):
+    return -np.cos(X)*np.cos(Y)*np.exp(-((X-np.pi)**2+(Y-np.pi)**2))
+
 surface_functions = {
     "Функция Била": beale,
     "Функция Бута": booth,
@@ -36,5 +39,6 @@ surface_functions = {
     "Функция Матьяса": matyas,
     "Функция Леви N 13": levi_n13,
     "Функция Химмельблау": himmelblau,
-    "Функция трёхгорбого верблюда": three_hump_camel
+    "Функция трёхгорбого верблюда": three_hump_camel,
+    "Функция Изома": easom
 }
