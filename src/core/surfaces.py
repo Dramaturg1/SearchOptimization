@@ -48,21 +48,133 @@ def schaffer_n4(X,Y):
 def holder(X,Y):
     return -np.abs(np.sin(X)*np.cos(Y)*np.exp(np.abs(1-np.sqrt(X*X+Y*Y)/np.pi)))
 
-surface_functions = {
-    "Функция Била": beale,
-    "Функция Бута": booth,
-    "Функция Экли": ackley,
-    "Функция Гольдшейна-Прайса": goldstein_price,
-    "Функция Букина N 6": bukin_n6,
-    "Функция Матьяса": matyas,
-    "Функция Леви N 13": levi_n13,
-    "Функция Химмельблау": himmelblau,
-    "Функция трёхгорбого верблюда": three_hump_camel,
-    "Функция Изома": easom,
-    "Функция \"крест на подносе\"": cross_in_tray,
-    "Функция \"подставка для яиц\"": eggholder,
-    "Функция МакКормика": mccormick,
-    "Функция Шаффера N2": schaffer_n2,
-    "Функция Шаффера N4": schaffer_n4,
-    "Табличная функция Хольдера": holder
+surface_data = {
+    "Функция Била": {
+        "func": beale,
+        "xmin": -4.5,
+        "xmax": 4.5,
+        "ymin": -4.5,
+        "ymax": 4.5,
+        "points": 400
+    },
+    "Функция Бута": {
+        "func": booth,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 400
+    },
+    "Функция Экли": {
+        "func": ackley,
+        "xmin": -5,
+        "xmax": 5,
+        "ymin": -5,
+        "ymax": 5,
+        "points": 400
+    },
+    "Функция Гольдшейна-Прайса": {
+        "func": goldstein_price,
+        "xmin": -2,
+        "xmax": 2,
+        "ymin": -2,
+        "ymax": 2,
+        "points": 400
+    },
+    "Функция Букина N 6": {
+        "func": bukin_n6,
+        "xmin": -15,
+        "xmax": -5,
+        "ymin": -3,
+        "ymax": 3,
+        "points": 500
+    },
+    "Функция Матьяса": {
+        "func": matyas,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    },
+    "Функция Леви N 13": {
+        "func": levi_n13,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    },
+    "Функция Химмельблау": {
+        "func": himmelblau,
+        "xmin": -5,
+        "xmax": 5,
+        "ymin": -5,
+        "ymax": 5,
+        "points": 500
+    },
+    "Функция трёхгорбого верблюда": {
+        "func": three_hump_camel,
+        "xmin": -5,
+        "xmax": 5,
+        "ymin": -5,
+        "ymax": 5,
+        "points": 500
+    },
+    "Функция Изома": {
+        "func": easom,
+        "xmin": -100,
+        "xmax": 100,
+        "ymin": -100,
+        "ymax": 100,
+        "points": 1000
+    },
+    "Функция \"крест на подносе\"": {
+        "func": cross_in_tray,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    },
+    "Функция \"подставка для яиц\"": {
+        "func": eggholder,
+        "xmin": -512,
+        "xmax": 512,
+        "ymin": -512,
+        "ymax": 512,
+        "points": 1000
+    },
+    "Функция МакКормика": {
+        "func": mccormick,
+        "xmin": -1.5,
+        "xmax": 4,
+        "ymin": -3,
+        "ymax": 4,
+        "points": 500
+    },
+    "Функция Шаффера N2": {
+        "func": schaffer_n2,
+        "xmin": -100,
+        "xmax": 100,
+        "ymin": -100,
+        "ymax": 100,
+        "points": 800
+    },
+    "Функция Шаффера N4": {
+        "func": schaffer_n4,
+        "xmin": -100,
+        "xmax": 100,
+        "ymin": -100,
+        "ymax": 100,
+        "points": 800
+    },
+    "Табличная функция Хольдера": {
+        "func": holder,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    },
 }

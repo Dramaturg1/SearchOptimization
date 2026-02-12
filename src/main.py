@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QApplication, QVBoxLayout
 import pyqtgraph.opengl as gl
 from src.core.CustomLoader import CustomLoader
 from core.plotter import generate_surface
-from src.core.surfaces import surface_functions
+from src.core.surfaces import surface_data
 import sys
 import os
 
@@ -19,10 +19,10 @@ def update_surface():
         print("Ошибка: неверные параметры")
         return
     func_name = window.comboBox.currentText()
-    if func_name not in surface_functions:
+    if func_name not in surface_data:
         print("нету")
         return
-    func = surface_functions[func_name]
+    func = surface_data[func_name]["func"]
     surface, Z = generate_surface(func, xmin, xmax, ymin, ymax, npoints)
     if surface_item:
         view.removeItem(surface_item)
@@ -40,6 +40,17 @@ def update_surface():
 
 def reset_view():
     view.setCameraPosition(distance=30, elevation=30, azimuth=30)
+
+def on_function_changed():
+    name = window.comboBox.currentText()
+    if name not in surface_data:
+        return
+    data = surface_data[name]
+    window.lineEdit.setText(str(data["xmin"]))
+    window.lineEdit_2.setText(str(data["xmax"]))
+    window.lineEdit_3.setText(str(data["ymin"]))
+    window.lineEdit_4.setText(str(data["ymax"]))
+    window.lineEdit_5.setText(str(data["points"]))
 
 app = QApplication(sys.argv)
 
@@ -64,6 +75,7 @@ view.addItem(grid)
 surface_item = None
 
 window.pushButton.clicked.connect(update_surface)
+window.comboBox.currentTextChanged.connect(on_function_changed)
 
 window.show()
 sys.exit(app.exec())
