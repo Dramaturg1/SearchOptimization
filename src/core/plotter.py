@@ -6,7 +6,13 @@ def generate_surface(func, xmin, xmax, ymin, ymax, npoints=300):
     x = np.linspace(xmin, xmax, npoints)
     y = np.linspace(ymin, ymax, npoints)
     X, Y = np.meshgrid(x, y)
-    Z = func(X,Y)
+    Z_raw = func(X,Y)
+    Z_min = Z_raw.min()
+    Z_max = Z_raw.max()
+    if Z_max != Z_min:
+        Z = (Z_raw - Z_min) / (Z_max - Z_min) * 10
+    else:
+        Z = Z_raw
 
     Z_norm = (Z - Z.min()) / (Z.max() - Z.min())
     cmap = pyplot.get_cmap("jet")
