@@ -8,7 +8,8 @@ class SteepestDescent:
     Метод наискорейшего спуска для поиска минимума функции.
     """
 
-    def __init__(self, func, grad, x0, eps=1e-6, M=100, delta=1e-7):
+    def __init__(self, func, grad, x0, eps=1e-6, M=100, delta=1e-7, t_bounds=(0, 2)):
+        self.t_bounds = t_bounds
         self.func = func  # функция f(x,y)
         self.grad = grad  # градиент
         self.x = np.array(x0, dtype=float)
@@ -40,7 +41,7 @@ class SteepestDescent:
             x_test = self.x - t * grad
             return self.func(x_test[0], x_test[1])
 
-        result = minimize_scalar(func_for_t, bounds=(0, 1), method='bounded')
+        result = minimize_scalar(func_for_t, bounds=self.t_bounds, method='bounded')
         t = result.x
 
         # Вычисляем новую точку

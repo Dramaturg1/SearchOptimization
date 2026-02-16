@@ -33,7 +33,6 @@ def update_surface():
         ymin = float(window.lineEdit_3.text())
         ymax = float(window.lineEdit_4.text())
         npoints = int(window.lineEdit_5.text())
-        zscale = 0
     except ValueError:
         print("Ошибка: неверные параметры")
         return
@@ -65,19 +64,7 @@ def update_surface():
 
     if surface_item:
         view.removeItem(surface_item)
-<<<<<<< Updated upstream
-    Z_center = (Z.max() + Z.min()) / 2
-    surface.translate(0,0,-Z_center)
-    z_abs = max(abs(Z.min()), abs(Z.max()))
-    z_range = Z.max()-Z.min()
-    if z_range == 0:
-        zscale = 1.0
-    else:
-        zscale = 10 / z_range
-    surface.scale(1, 1, zscale)
-=======
 
->>>>>>> Stashed changes
     view.addItem(surface)
     surface_item = surface
 
@@ -93,14 +80,11 @@ def update_surface():
 
 def to_display_coords(x, y, z):
     """Конвертирует координаты функции в координаты отображения"""
-    # В plotter.py Z уже нормализован к [0, 10]
-    # Нам нужно применить ту же нормализацию
     z_range = current_z_max - current_z_min
     if z_range == 0:
         z_norm = 5.0
     else:
         z_norm = (z - current_z_min) / z_range * 10
-
     return np.array([float(x), float(y), z_norm])
 
 
@@ -167,8 +151,8 @@ def start_optimization():
 
     # Блокируем/разблокируем кнопки
     window.pushButton_2.setEnabled(False)  # Start
-    window.pushButton_3.setEnabled(True)  # Step
-    window.pushButton_4.setEnabled(True)  # Stop
+    window.pushButton_3.setEnabled(True)   # Step
+    window.pushButton_4.setEnabled(True)   # Stop
 
     print_to_console(f"\n=== Запуск оптимизации ===")
     print_to_console(f"Начальная точка: [{x0}, {y0}]")
@@ -207,7 +191,7 @@ def step_optimization():
 
 def stop_optimization():
     timer.stop()
-    window.pushButton_2.setEnabled(True)  # Start
+    window.pushButton_2.setEnabled(True)   # Start
     window.pushButton_3.setEnabled(False)  # Step
     window.pushButton_4.setEnabled(False)  # Stop
 
@@ -244,6 +228,17 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(current_dir, "ui", "main.ui")
 window = loader.load(ui_path)
 
+# Отладка - посмотрим какие атрибуты есть
+print("Доступные кнопки:")
+for attr in dir(window):
+    if 'pushButton' in attr:
+        print(f"  {attr}")
+
+print("\nДоступные поля ввода:")
+for attr in dir(window):
+    if 'lineEdit' in attr:
+        print(f"  {attr}")
+
 # Основной 3D вид (для отрисовки поверхностей и градиента)
 view = gl.GLViewWidget(parent=window.widget)
 layout = window.widget.layout()
@@ -253,7 +248,7 @@ if layout is None:
 layout.addWidget(view)
 view.setCameraPosition(distance=30, elevation=30, azimuth=45)
 
-# Сетка (оставляем на месте)
+# Сетка
 grid = gl.GLGridItem()
 grid.setSize(10, 10)
 grid.setSpacing(1, 1)
@@ -265,11 +260,15 @@ surface_item = None
 window.pushButton.clicked.connect(update_surface)
 window.comboBox.currentTextChanged.connect(on_function_changed)
 
-# Подключаем кнопки метода
-window.pushButton_2.clicked.connect(start_optimization)  # Start
-window.pushButton_3.clicked.connect(step_optimization)  # Step
-window.pushButton_4.clicked.connect(stop_optimization)  # Stop
-window.pushButton_5.clicked.connect(reset_optimization)  # Reset
+# Подключаем кнопки метода (с проверкой существования)
+if hasattr(window, 'pushButton_2'):
+    window.pushButton_2.clicked.connect(start_optimization)  # Start
+if hasattr(window, 'pushButton_3'):
+    window.pushButton_3.clicked.connect(step_optimization)   # Step
+if hasattr(window, 'pushButton_4'):
+    window.pushButton_4.clicked.connect(stop_optimization)   # Stop
+if hasattr(window, 'pushButton_5'):
+    window.pushButton_5.clicked.connect(reset_optimization)  # Reset
 
 # Настраиваем консольный вывод
 setup_console()
