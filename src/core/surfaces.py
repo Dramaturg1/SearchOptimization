@@ -55,7 +55,7 @@ surface_data = {
         "xmax": 4.5,
         "ymin": -4.5,
         "ymax": 4.5,
-        "points": 400
+        "points": 200
     },
     "Функция Бута": {
         "func": booth,
@@ -63,7 +63,7 @@ surface_data = {
         "xmax": 10,
         "ymin": -10,
         "ymax": 10,
-        "points": 400
+        "points": 200
     },
     "Функция Экли": {
         "func": ackley,
@@ -71,7 +71,7 @@ surface_data = {
         "xmax": 5,
         "ymin": -5,
         "ymax": 5,
-        "points": 400
+        "points": 200
     },
     "Функция Гольдшейна-Прайса": {
         "func": goldstein_price,
@@ -79,7 +79,7 @@ surface_data = {
         "xmax": 2,
         "ymin": -2,
         "ymax": 2,
-        "points": 400
+        "points": 200
     },
     "Функция Букина N 6": {
         "func": bukin_n6,
@@ -87,7 +87,7 @@ surface_data = {
         "xmax": -5,
         "ymin": -3,
         "ymax": 3,
-        "points": 500
+        "points": 300
     },
     "Функция Матьяса": {
         "func": matyas,
@@ -95,7 +95,7 @@ surface_data = {
         "xmax": 10,
         "ymin": -10,
         "ymax": 10,
-        "points": 500
+        "points": 300
     },
     "Функция Леви N 13": {
         "func": levi_n13,
@@ -119,15 +119,15 @@ surface_data = {
         "xmax": 5,
         "ymin": -5,
         "ymax": 5,
-        "points": 500
+        "points": 300
     },
     "Функция Изома": {
         "func": easom,
-        "xmin": -100,
-        "xmax": 100,
-        "ymin": -100,
-        "ymax": 100,
-        "points": 1000
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
     },
     "Функция \"крест на подносе\"": {
         "func": cross_in_tray,
@@ -135,7 +135,7 @@ surface_data = {
         "xmax": 10,
         "ymin": -10,
         "ymax": 10,
-        "points": 500
+        "points": 501
     },
     "Функция \"подставка для яиц\"": {
         "func": eggholder,
@@ -143,7 +143,7 @@ surface_data = {
         "xmax": 512,
         "ymin": -512,
         "ymax": 512,
-        "points": 1000
+        "points": 1001
     },
     "Функция МакКормика": {
         "func": mccormick,
@@ -151,7 +151,7 @@ surface_data = {
         "xmax": 4,
         "ymin": -3,
         "ymax": 4,
-        "points": 500
+        "points": 400
     },
     "Функция Шаффера N2": {
         "func": schaffer_n2,

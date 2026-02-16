@@ -14,7 +14,6 @@ def update_surface():
         ymin = float(window.lineEdit_3.text())
         ymax = float(window.lineEdit_4.text())
         npoints = int(window.lineEdit_5.text())
-        zscale = 0
     except ValueError:
         print("Ошибка: неверные параметры")
         return
@@ -35,6 +34,7 @@ def update_surface():
     else:
         zscale = 10 / z_range
     surface.scale(1, 1, zscale)
+    reset_view()
     view.addItem(surface)
     surface_item = surface
 
