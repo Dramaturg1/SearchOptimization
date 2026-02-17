@@ -10,20 +10,20 @@ def generate_surface(func, xmin, xmax, ymin, ymax, npoints=300):
     Z_min = Z_raw.min()
     Z_max = Z_raw.max()
     if Z_max != Z_min:
-        Z = (Z_raw - Z_min) / (Z_max - Z_min) * 10
+        Z_vis = (Z_raw - Z_min) / (Z_max - Z_min) * 10
     else:
-        Z = Z_raw
+        Z_vis = Z_raw
 
-    Z_norm = (Z - Z.min()) / (Z.max() - Z.min())
+    norm = (Z_vis - Z_vis.min()) / (Z_vis.max() - Z_vis.min())
     cmap = pyplot.get_cmap("jet")
-    colors = cmap(Z_norm)
+    colors = cmap(norm)
     surface_item = gl.GLSurfacePlotItem(
         x=x,
         y=y,
-        z=Z,
+        z=Z_vis,
         colors=colors,
         smooth=True,
         drawEdges=False,
         shader="shaded"
     )
-    return surface_item, Z
+    return surface_item, Z_raw, Z_vis, Z_min, Z_max
