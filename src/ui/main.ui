@@ -16,14 +16,12 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">
-      <property name="sizeConstraint">
-       <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
-      <item>
-       <widget class="QWidget" name="widget" native="true"/>
-      </item>
-      <item>
+      <widget class="QWidget" name="widget" native="true"/>
+      <widget class="QWidget" name="">
        <layout class="QVBoxLayout" name="verticalLayout" stretch="3,2,2">
         <item>
          <widget class="QTabWidget" name="tabWidget">
@@ -364,8 +362,8 @@
          </widget>
         </item>
        </layout>
-      </item>
-     </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
