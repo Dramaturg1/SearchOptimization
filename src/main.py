@@ -1,28 +1,36 @@
 from PySide6.QtWidgets import QApplication, QVBoxLayout
+from PySide6.QtCore import QTimer
 import pyqtgraph.opengl as gl
 from src.core.CustomLoader import CustomLoader
 from core.plotter import generate_surface
 from src.core.surfaces import surface_data
+from src.core.optimization_visualizer import OptimizationVisualizer
+from src.methods.gradient import SteepestDescent
 import numpy as np
 import sys
 import os
 
+# Глобальные переменные
 surface_item = None
 current_func = None
+current_grad = None
 current_zmin = None
 current_zmax = None
-trajectory_items = []
-trajectory_points = []
-
+visualizer = None  # Будет хранить экземпляр OptimizationVisualizer
+current_sd = None
+timer = QTimer()
 gd_running = False
 
-def z_to_vis(z):
+
+def real_z_to_vis(z):
+    """Конвертирует реальный Z в визуальный Z (0-10)"""
+    if current_zmax == current_zmin:
+        return current_zmax
     return (z - current_zmin) / (current_zmax - current_zmin) * 10
 
-def update_surface():
 
-    global surface_item
-    global current_func, current_zmin, current_zmax
+def update_surface():
+    global surface_item, current_func, current_zmin, current_zmax, visualizer
 
     try:
         xmin = float(window.lineEdit.text())
@@ -35,12 +43,20 @@ def update_surface():
         return
 
     name = window.comboBox.currentText()
-
     if name not in surface_data:
         return
 
     data = surface_data[name]
     func = data["func"]
+
+    # Создаем градиент
+    def grad_func(x):
+        h = 1e-6
+        dfdx = (func(x[0] + h, x[1]) - func(x[0] - h, x[1])) / (2 * h)
+        dfdy = (func(x[0], x[1] + h) - func(x[0], x[1] - h)) / (2 * h)
+        return np.array([dfdx, dfdy])
+
+    current_grad = grad_func
 
     surface, Z_raw, Z_vis, zmin, zmax = generate_surface(
         func,
@@ -51,19 +67,21 @@ def update_surface():
 
     current_zmin = zmin
     current_zmax = zmax
+    current_func = func
 
     if surface_item:
         view.removeItem(surface_item)
 
-    surface.translate(0,0, -2)
+    surface.translate(0, 0, -2)
     view.addItem(surface)
     surface_item = surface
 
-    current_func = func
-    current_zmin = zmin
-    current_zmax = zmax
+    # Очищаем визуализатор
+    if visualizer:
+        visualizer.clear()
 
     reset_view()
+
 
 def reset_view():
     view.setCameraPosition(
@@ -72,15 +90,13 @@ def reset_view():
         azimuth=45
     )
 
+
 def on_function_changed():
-
     name = window.comboBox.currentText()
-
     if name not in surface_data:
         return
 
     data = surface_data[name]
-
     window.lineEdit.setText(str(data["xmin"]))
     window.lineEdit_2.setText(str(data["xmax"]))
     window.lineEdit_3.setText(str(data["ymin"]))
@@ -88,178 +104,144 @@ def on_function_changed():
     window.lineEdit_5.setText(str(data["points"]))
 
 
-def real_z_to_vis(z):
-    if current_zmax==current_zmin:
-        return current_zmax
-    return (z - current_zmin) / (current_zmax - current_zmin) * 10
-
-def show_point(x, y):
-    if current_func is None:
-        return
-    z = current_func(x, y)
-    z_vis = real_z_to_vis(z)
-    pos = np.array([[x, y, z_vis + 0.05]])
-    point_item.setData(pos=pos)
-
-def random_color():
-    return (np.random.rand(), np.random.rand(), np.random.rand(), 1.0)
-
-def gradient(f, x, y, h=1e-5):
-
-    dx = (f(x+h, y) - f(x-h, y)) / (2*h)
-    dy = (f(x, y+h) - f(x, y-h)) / (2*h)
-
-    return dx, dy
-
-def gradient_descent():
-    global gd_running, trajectory_items
+def start_optimization():
+    global current_sd, visualizer, gd_running
 
     if current_func is None:
         print("Сначала построй поверхность")
         return
 
     try:
-        eps_grad = float(window.lineEdit_8.text())
-        max_iter = int(window.lineEdit_9.text())
-    except:
+        x0 = float(window.lineEdit_6.text())
+        y0 = float(window.lineEdit_7.text())
+        eps = float(window.lineEdit_8.text())
+        M = int(window.lineEdit_9.text())
+    except ValueError:
         print("Ошибка параметров ГС")
         return
 
-    lr = 0.01
-    eps_pos = 1e-5
-    eps_f = 1e-6
+    # Создаем визуализатор если его нет
+    if visualizer is None:
+        visualizer = OptimizationVisualizer(view)
 
-    try:
-        x_start = float(window.lineEdit_6.text())
-        y_start = float(window.lineEdit_7.text())
-        start_points = [(x_start, y_start)]
-    except ValueError:
-        xmin = float(window.lineEdit.text())
-        xmax = float(window.lineEdit_2.text())
-        ymin = float(window.lineEdit_3.text())
-        ymax = float(window.lineEdit_4.text())
-        N = 100
-        start_points = [
-            (np.random.uniform(xmin, xmax), np.random.uniform(ymin, ymax)) for _ in range (N)]
+    # Создаем оптимизатор
+    current_sd = SteepestDescent(
+        current_func,
+        current_grad,
+        [x0, y0],
+        eps=eps,
+        M=M
+    )
 
+    visualizer.clear()
     gd_running = True
-    minima = []
-    for x0, y0 in start_points:
-        if not gd_running:
-            break
 
-        x, y = x0, y0
-        f_prev = current_func(x, y)
-        traj_points = []
-        color = random_color()
-        traj_item = gl.GLLinePlotItem(color=color, width=3)
-        view.addItem(traj_item)
-        trajectory_items.append(traj_item)
+    # Добавляем начальную точку
+    z0 = current_func(x0, y0)
+    start_point = np.array([x0, y0, real_z_to_vis(z0)])
+    visualizer.add_point(start_point, is_current=True)
 
-        for k in range(max_iter):
-            if not gd_running:
-                break
+    print(f"\n=== Запуск оптимизации ===")
+    print(f"Начальная точка: [{x0}, {y0}]")
+    print(f"Параметры: eps={eps}, M={M}")
 
-            dx, dy = gradient(current_func, x, y)
-            grad_norm = np.sqrt(dx**2 + dy**2)
-            if grad_norm < eps_grad:
-                break
+    timer.start(500)
 
-            x_new = x - lr * dx
-            y_new = y - lr * dy
-            f_new = current_func(x_new, y_new)
 
-            if f_new > f_prev:
-                lr *= 0.5
-                continue
+def step_optimization():
+    global current_sd, visualizer, gd_running
 
-            if np.sqrt((x_new - x)**2 + (y_new - y)**2) < eps_pos and abs(f_new - f_prev) < eps_f:
-                x, y = x_new, y_new
-                break
+    if not current_sd or not gd_running:
+        return
 
-            x, y = x_new, y_new
-            f_prev = f_new
+    x, done, message = current_sd.step()
 
-            show_point(x, y)
+    # Конвертируем в визуальные координаты
+    z = current_func(x[0], x[1])
+    disp_point = np.array([x[0], x[1], real_z_to_vis(z)])
 
-            pos = np.array([[x, y, real_z_to_vis(current_func(x, y))]])
-            traj_points.append(pos)
-            traj_item.setData(pos=np.array(traj_points))
+    if visualizer:
+        visualizer.add_point(disp_point, is_current=True)
 
-            QApplication.processEvents()
+        # Добавляем стрелку от предыдущей точки
+        if len(visualizer.points) >= 2:
+            prev_point = visualizer.points[-2]
+            visualizer.add_arrow(prev_point, disp_point)
 
-        minima.append((x, y, current_func(x, y)))
-        print(f"Старт ({x0:.2f},{y0:.2f}): минимум найден: x={x:.5f}, y={y:.5f}, f={current_func(x, y):.5f}")
+    # Выводим каждые 5 итераций
+    if current_sd.k % 5 == 0 or done:
+        print(f"Итерация {current_sd.k}: точка [{x[0]:.6f}, {x[1]:.6f}], f={z:.6f}")
 
-    if minima:
-        global_min = min(minima, key=lambda t: t[2])
-        print(f"\nГлобальный минимум среди всех стартов: x={global_min[0]:.5f}, "
-              f"y={global_min[1]:.5f}, f={global_min[2]:.5f}")
+    if done:
+        stop_optimization()
+        print(f"✅ {message}")
 
-def stop_gd():
+
+def stop_optimization():
     global gd_running
     gd_running = False
+    timer.stop()
 
 
-def reset_gd():
-    global gd_running, trajectory_items
+def reset_optimization():
+    global gd_running, current_sd, visualizer
 
     gd_running = False
-    for item in trajectory_items:
-        view.removeItem(item)
-    trajectory_items = []
+    timer.stop()
 
+    if visualizer:
+        visualizer.clear()
+
+    if current_sd:
+        current_sd.reset()
+
+    print("🔄 Сброс оптимизации")
+
+
+# Инициализация приложения
 app = QApplication.instance()
-
 if app is None:
     app = QApplication(sys.argv)
 
+# Загрузка UI
 loader = CustomLoader()
-
 current_dir = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(current_dir, "ui", "main.ui")
-
 window = loader.load(ui_path)
 
-
+# Настройка 3D вида
 view = gl.GLViewWidget(parent=window.widget)
-
 layout = window.widget.layout()
-
 if layout is None:
     layout = QVBoxLayout(window.widget)
     window.widget.setLayout(layout)
-
 layout.addWidget(view)
 
+# Сетка
 grid = gl.GLGridItem()
 grid.setSize(10, 10)
 grid.setSpacing(1, 1)
 grid.translate(0, 0, -1)
 view.addItem(grid)
 
+# Оси
 axis = gl.GLAxisItem()
-axis.setSize(5,5,5)
+axis.setSize(5, 5, 5)
 view.addItem(axis)
 
+# Создаем визуализатор
+visualizer = OptimizationVisualizer(view)
 
-# Point
-point_item = gl.GLScatterPlotItem(
-    size=15,
-    color=(1, 0, 0, 1)
-)
-point_item.setGLOptions('opaque')
-
-view.addItem(point_item)
-
+# Подключаем кнопки
 window.pushButton.clicked.connect(update_surface)
-
 window.comboBox.currentTextChanged.connect(on_function_changed)
+window.pushButton_2.clicked.connect(start_optimization)  # Start
+window.pushButton_3.clicked.connect(step_optimization)  # Step
+window.pushButton_4.clicked.connect(stop_optimization)  # Stop
+window.pushButton_5.clicked.connect(reset_optimization)  # Reset
 
-window.pushButton_2.clicked.connect(gradient_descent)
-window.pushButton_4.clicked.connect(stop_gd)
-window.pushButton_5.clicked.connect(reset_gd)
+# Таймер для автоматического шага
+timer.timeout.connect(step_optimization)
 
 window.show()
-
 sys.exit(app.exec())
