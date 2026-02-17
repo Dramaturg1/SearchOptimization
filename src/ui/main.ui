@@ -180,6 +180,11 @@
           <property name="title">
            <string>Консольный вывод</string>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QTextEdit" name="textEdit"/>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>

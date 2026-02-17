@@ -4,26 +4,20 @@ import pyqtgraph.opengl as gl
 
 
 class OptimizationVisualizer:
-    """
-    Класс для визуализации процесса оптимизации
-    """
 
     def __init__(self, view_widget):
         self.view = view_widget
-        self.points = []  # Точки траектории
-        self.arrows = []  # Стрелки
+        self.points = []
+        self.arrows = []
         self.scatter_item = None
         self.line_item = None
         self.current_point_item = None
         self.arrow_items = []
-
-        # Цвета
-        self.trajectory_color = (1.0, 0.0, 0.0, 1.0)  # Красный
-        self.current_point_color = (0.0, 1.0, 0.0, 1.0)  # Зеленый
-        self.arrow_color = (1.0, 0.5, 0.0, 0.8)  # Оранжевый
+        self.trajectory_color = (1.0, 0.0, 0.0, 1.0)
+        self.current_point_color = (0.0, 1.0, 0.0, 1.0)
+        self.arrow_color = (1.0, 0.5, 0.0, 0.8)
 
     def clear(self):
-        """Очищает все визуальные элементы"""
         if self.scatter_item:
             self.view.removeItem(self.scatter_item)
             self.scatter_item = None
@@ -44,7 +38,6 @@ class OptimizationVisualizer:
         self.arrows = []
 
     def add_point(self, point, is_current=False):
-        """Добавляет точку на график"""
         self.points.append(point)
         self._update_trajectory()
 
@@ -52,18 +45,15 @@ class OptimizationVisualizer:
             self._update_current_point(point)
 
     def add_arrow(self, start_point, end_point):
-        """Добавляет стрелку"""
         self.arrows.append((start_point, end_point))
         self._update_arrows()
 
     def _update_trajectory(self):
-        """Обновляет отображение траектории"""
         if len(self.points) < 2:
             return
 
         points = np.array(self.points)
 
-        # Линия траектории
         if self.line_item:
             self.view.removeItem(self.line_item)
 
@@ -75,7 +65,6 @@ class OptimizationVisualizer:
         )
         self.view.addItem(self.line_item)
 
-        # Точки траектории
         if self.scatter_item:
             self.view.removeItem(self.scatter_item)
 
@@ -93,7 +82,6 @@ class OptimizationVisualizer:
         self.view.addItem(self.scatter_item)
 
     def _update_current_point(self, point):
-        """Обновляет отображение текущей точки"""
         if self.current_point_item:
             self.view.removeItem(self.current_point_item)
 
@@ -106,12 +94,10 @@ class OptimizationVisualizer:
         self.view.addItem(self.current_point_item)
 
     def _update_arrows(self):
-        """Обновляет отображение стрелок"""
         for arrow in self.arrow_items:
             self.view.removeItem(arrow)
         self.arrow_items = []
 
-        # Показываем только последние 5 стрелок
         for start, end in self.arrows[-5:]:
             # Линия стрелки
             line_item = gl.GLLinePlotItem(

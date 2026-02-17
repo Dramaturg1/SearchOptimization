@@ -12,7 +12,7 @@ surface_item = None
 current_func = None
 current_zmin = None
 current_zmax = None
-gd_method = None  # Экземпляр класса градиентного спуска
+gd_method = None
 
 def update_surface():
     global surface_item, current_func, current_zmin, current_zmax, gd_method
@@ -24,7 +24,7 @@ def update_surface():
         ymax = float(window.lineEdit_4.text())
         npoints = int(window.lineEdit_5.text())
     except:
-        print("Ошибка параметров")
+        window.textEdit.append("Ошибка")
         return
 
     name = window.comboBox.currentText()
@@ -55,7 +55,6 @@ def update_surface():
     current_zmin = zmin
     current_zmax = zmax
 
-    # Обновляем функцию в методе градиентного спуска
     if gd_method:
         gd_method.set_function(current_func, current_zmin, current_zmax)
 
@@ -84,24 +83,22 @@ def gradient_descent():
     global gd_method
 
     if current_func is None:
-        print("Сначала построй поверхность")
+        window.textEdit.append("Сначала построй поверхность")
         return
 
     try:
         eps_grad = float(window.lineEdit_8.text())
         max_iter = int(window.lineEdit_9.text())
     except:
-        print("Ошибка параметров ГС")
+        window.textEdit.append("Ошибка параметров ГС")
         return
 
-    # Создаем метод если его нет
     if gd_method is None:
-        gd_method = GradientDescentMethod(view, current_func, current_zmin, current_zmax, point_item)
+        gd_method = GradientDescentMethod(view, current_func, current_zmin, current_zmax, point_item, window)
     else:
         gd_method.reset()
         gd_method.set_function(current_func, current_zmin, current_zmax)
 
-    # Определяем стартовые точки
     try:
         x_start = float(window.lineEdit_6.text())
         y_start = float(window.lineEdit_7.text())
@@ -116,7 +113,6 @@ def gradient_descent():
             (np.random.uniform(xmin, xmax), np.random.uniform(ymin, ymax)) for _ in range(N)
         ]
 
-    # Запускаем
     gd_method.run_multiple(start_points, eps_grad, max_iter)
 
 def stop_gd():
@@ -155,7 +151,6 @@ axis = gl.GLAxisItem()
 axis.setSize(5,5,5)
 view.addItem(axis)
 
-# Point
 point_item = gl.GLScatterPlotItem(
     size=15,
     color=(1, 0, 0, 1)
@@ -163,7 +158,6 @@ point_item = gl.GLScatterPlotItem(
 point_item.setGLOptions('opaque')
 view.addItem(point_item)
 
-# Подключаем кнопки
 window.pushButton.clicked.connect(update_surface)
 window.comboBox.currentTextChanged.connect(on_function_changed)
 window.pushButton_2.clicked.connect(gradient_descent)
