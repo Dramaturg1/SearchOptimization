@@ -252,6 +252,6 @@ surface_data = {
         "xmax": 10,
         "ymin": -10,
         "ymax": 10,
-        "points": 500
+        "points": 600
     }
 }
