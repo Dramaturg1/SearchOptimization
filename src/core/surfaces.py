@@ -3,6 +3,9 @@ import numpy as np
 def beale(X, Y):
     return (1.5 - X + X * Y) ** 2 + (2.25 - X + X * Y ** 2) ** 2 + (2.625 - X + X * Y ** 3) ** 2
 
+def sphere(X, Y):
+    return X**2 + Y**2
+
 def booth(X, Y):
     return (X + 2*Y - 7)**2 + (2*X + Y - 5)**2
 
@@ -17,6 +20,15 @@ def bukin_n6(X,Y):
 
 def matyas(X,Y):
     return 0.26*(X**2+Y**2) - 0.48*X*Y
+
+def rastrigin(X, Y):
+    return 20 + (X**2 - 10*np.cos(2*np.pi*X)) + (Y**2 - 10*np.cos(2*np.pi*Y))
+
+def rosenbrock(X, Y):
+    return 100*(Y - X**2)**2 + (X - 1)**2
+
+def styblinski_tang(X, Y):
+    return ((X**4-16*X**2+5*X) + (Y**4-16*X**2+5*Y))/2
 
 def levi_n13(X,Y):
     return (np.sin(3*np.pi*X))**2 + (X-1)**2*(1+np.sin(3*np.pi*X))+(Y-1)**2*(1+np.sin(2*np.pi*Y)**2)
@@ -48,6 +60,15 @@ def schaffer_n4(X,Y):
 def holder(X,Y):
     return -np.abs(np.sin(X)*np.cos(Y)*np.exp(np.abs(1-np.sqrt(X*X+Y*Y)/np.pi)))
 
+def pip_gupip(X, Y):
+    return 2*X**2+3*Y**2+4*X*Y-6*X-3*Y
+
+def guugy(X, Y):
+    return X + 2*Y-Y**2
+
+def dosvidanie(X, Y):
+    return 2*X**2+2*X*Y+2*Y**2 - 4*X - 6*X**2
+
 surface_data = {
     "Функция Била": {
         "func": beale,
@@ -56,6 +77,38 @@ surface_data = {
         "ymin": -4.5,
         "ymax": 4.5,
         "points": 200
+    },
+    "Функция сферы": {
+        "func": sphere,
+        "xmin": -5,
+        "xmax": 5,
+        "ymin": -5,
+        "ymax": 5,
+        "points": 400
+    },
+    "Функция Растригина": {
+        "func": rastrigin,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": -10,
+        "points": 800
+    },
+    "Функция Розенброка": {
+        "func": rosenbrock,
+        "xmin": -2,
+        "xmax": 2,
+        "ymin": -1,
+        "ymax": 3,
+        "points": 400
+    },
+    "Функция Стыбинского-Танга": {
+        "func": styblinski_tang,
+        "xmin": -5,
+        "xmax": 5,
+        "ymin": -5,
+        "ymax": 5,
+        "points": 400
     },
     "Функция Бута": {
         "func": booth,
@@ -177,4 +230,28 @@ surface_data = {
         "ymax": 10,
         "points": 500
     },
+    "пип гупип": {
+        "func": pip_gupip,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    },
+    "гууги": {
+        "func": guugy,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    },
+    "досвидание": {
+        "func": dosvidanie,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 500
+    }
 }

@@ -203,7 +203,22 @@
             <widget class="QComboBox" name="comboBox">
              <item>
               <property name="text">
-               <string>Функция Растринга (пока нет)</string>
+               <string>Функция Растригина</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>пип гупип</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>гууги</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>досвидание</string>
               </property>
              </item>
              <item>
@@ -213,12 +228,12 @@
              </item>
              <item>
               <property name="text">
-               <string>Функция сферы (пока нет)</string>
+               <string>Функция сферы</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>Функция Розенброка (пока нет)</string>
+               <string>Функция Розенброка</string>
               </property>
              </item>
              <item>
@@ -298,7 +313,7 @@
              </item>
              <item>
               <property name="text">
-               <string>Функция Стыбинского-Танга (пока нет)</string>
+               <string>Функция Стыбинского-Танга</string>
               </property>
              </item>
             </widget>

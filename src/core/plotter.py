@@ -5,7 +5,7 @@ import pyqtgraph.opengl as gl
 def generate_surface(func, xmin, xmax, ymin, ymax, npoints=300):
     x = np.linspace(xmin, xmax, npoints)
     y = np.linspace(ymin, ymax, npoints)
-    X, Y = np.meshgrid(x, y)
+    X, Y = np.meshgrid(x, y, indexing='ij')
     Z_raw = func(X,Y)
     Z_min = Z_raw.min()
     Z_max = Z_raw.max()

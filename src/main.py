@@ -158,6 +158,8 @@ point_item = gl.GLScatterPlotItem(
 point_item.setGLOptions('opaque')
 view.addItem(point_item)
 
+window.lineEdit_8.setText("1e-5")
+window.lineEdit_9.setText("1000")
 window.pushButton.clicked.connect(update_surface)
 window.comboBox.currentTextChanged.connect(on_function_changed)
 window.pushButton_2.clicked.connect(gradient_descent)

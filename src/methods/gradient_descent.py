@@ -100,3 +100,4 @@ class GradientDescentMethod:
             self.view.removeItem(item)
         self.trajectory_items = []
         self.minima = []
+        self.window.textEdit.clear()
