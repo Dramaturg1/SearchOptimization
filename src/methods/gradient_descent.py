@@ -50,7 +50,6 @@ class GradientDescentMethod:
         return dx, dy
 
     def run(self, x0=None, y0=None, eps_grad=1e-5, max_iter=100, lr=0.01, eps_pos=1e-5, eps_f=1e-6):
-        # Генерация случайной точки, если не заданы координаты
         if x0 is None or y0 is None:
             x0, y0 = self.point_generator.generate_single()
             self.window.textEdit.append(f"Сгенерирована случайная начальная точка: ({x0:.4f}, {y0:.4f})")
@@ -92,7 +91,6 @@ class GradientDescentMethod:
         self.running = True
         self.minima = []
 
-        # Генерация случайных точек, если не заданы
         if start_points is None or len(start_points) == 0:
             start_points = self.point_generator.generate_multiple(random_count)
             self.window.textEdit.append(f"Сгенерировано {random_count} случайных начальных точек")
@@ -118,4 +116,4 @@ class GradientDescentMethod:
             self.view.removeItem(item)
         self.trajectory_items = []
         self.minima = []
-        self.window.textEdit.append("🔄 Визуализация градиентного спуска сброшена")
+        self.window.textEdit.append("Визуализация градиентного спуска сброшена")

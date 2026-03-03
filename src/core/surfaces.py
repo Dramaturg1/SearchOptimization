@@ -69,6 +69,21 @@ def guugy(X, Y):
 def dosvidanie(X, Y):
     return 2*X**2+2*X*Y+2*Y**2 - 4*X - 6*X**2
 
+def mexican_hat(X, Y):
+    return (np.sin(np.sqrt(X**2+Y**2)))/(np.sqrt(X**2+Y**2))
+
+def monkey_saddle(X, Y):
+    return X**3-3*X*Y**2
+
+def clover_leaf(X, Y):
+    return (X**2+Y**2)*np.cos(3*np.arctan(Y/X))
+
+def sinusoidal_ripples(X, Y):
+    return np.sin(X**2+Y**2)
+
+def screwed_egg(X, Y):
+    return 3*(1-X)**2*np.exp(-X**2-(Y+1)**2)-10*(X/5-X**3-Y**5)*np.exp(-X**2-Y**2)-1/3*np.exp(-(X+1)**2-Y**2)
+
 surface_data = {
     "Функция Била": {
         "func": beale,
@@ -91,7 +106,7 @@ surface_data = {
         "xmin": -10,
         "xmax": 10,
         "ymin": -10,
-        "ymax": -10,
+        "ymax": 10,
         "points": 800
     },
     "Функция Розенброка": {
@@ -248,6 +263,46 @@ surface_data = {
     },
     "досвидание": {
         "func": dosvidanie,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 600
+    },
+    "Шляпа мексиканца": {
+        "func": mexican_hat,
+        "xmin": -7,
+        "xmax": 7,
+        "ymin": -7,
+        "ymax": 7,
+        "points": 700
+    },
+    "Седло обезьяны": {
+        "func": monkey_saddle,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 600
+    },
+    "Лист клевера": {
+        "func": clover_leaf,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 600
+    },
+    "Синусоидальная рябь": {
+        "func": sinusoidal_ripples,
+        "xmin": -10,
+        "xmax": 10,
+        "ymin": -10,
+        "ymax": 10,
+        "points": 600
+    },
+    "Кривое яйцо": {
+        "func": screwed_egg,
         "xmin": -10,
         "xmax": 10,
         "ymin": -10,

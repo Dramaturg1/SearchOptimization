@@ -26,13 +26,13 @@ class WolfeMethod:
         self.y_opt = None
         self.direction = None
 
-        self.trajectory_items = []  # Список линий траекторий
-        self.start_points_items = []  # Список начальных точек
-        self.end_points_items = []  # Список конечных точек
+        self.trajectory_items = []
+        self.start_points_items = []
+        self.end_points_items = []
         self.minima = []
         self.current_point_item = None
-        self.trajectory_points = []  # Текущая траектория (для пошагового режима)
-        self.trajectory_line = None  # Текущая линия (для пошагового режима)
+        self.trajectory_points = []
+        self.trajectory_line = None
 
     def set_function(self, func, zmin, zmax):
         self.current_func = func
@@ -40,7 +40,6 @@ class WolfeMethod:
         self.current_zmax = zmax
 
     def update_bounds(self, xmin, xmax, ymin, ymax):
-        """Обновление границ для генератора точек"""
         self.point_generator.update_bounds(xmin, xmax, ymin, ymax)
 
     def z_to_vis(self, z):
@@ -57,11 +56,9 @@ class WolfeMethod:
         self.point_item.setData(pos=pos)
 
     def random_color(self):
-        """Генерация случайного цвета для траектории"""
         return (np.random.rand(), np.random.rand(), np.random.rand(), 1.0)
 
     def show_start_point(self, x, y, color=None):
-        """Отображение начальной точки"""
         if self.current_func is None:
             return
         z = self.current_func(x, y)
@@ -69,7 +66,7 @@ class WolfeMethod:
         pos = np.array([[x, y, z_vis]])
 
         if color is None:
-            color = (0, 1, 0, 1)  # Зеленый по умолчанию
+            color = (0, 1, 0, 1)
 
         point = gl.GLScatterPlotItem(
             pos=pos,
@@ -80,7 +77,6 @@ class WolfeMethod:
         self.start_points_items.append(point)
 
     def show_end_point(self, x, y, color=None):
-        """Отображение конечной точки"""
         if self.current_func is None:
             return
         z = self.current_func(x, y)
@@ -88,7 +84,7 @@ class WolfeMethod:
         pos = np.array([[x, y, z_vis]])
 
         if color is None:
-            color = (1, 0, 0, 1)  # Красный по умолчанию
+            color = (1, 0, 0, 1)
 
         point = gl.GLScatterPlotItem(
             pos=pos,
@@ -116,7 +112,6 @@ class WolfeMethod:
         self.view.addItem(self.current_point_item)
 
     def add_trajectory(self, points, color=None):
-        """Добавление полной траектории"""
         if len(points) < 2:
             return
 
@@ -134,7 +129,6 @@ class WolfeMethod:
         return trajectory_line
 
     def add_trajectory_point(self, x, y):
-        """Добавление точки в текущую траекторию (для пошагового режима)"""
         if self.current_func is None:
             return
         z = self.current_func(x, y)
@@ -145,25 +139,19 @@ class WolfeMethod:
             if self.trajectory_line:
                 self.view.removeItem(self.trajectory_line)
 
-            # Используем яркий цвет для временной линии
             self.trajectory_line = gl.GLLinePlotItem(
                 pos=np.array(self.trajectory_points),
-                color=(1, 0.5, 0, 1),  # Оранжевый для временной линии
-                width=3  # Чуть толще для наглядности
+                color=(1, 0.5, 0, 1),
+                width=3
             )
             self.view.addItem(self.trajectory_line)
 
     def extract_quadratic_coefficients(self, func, x0, y0, h=0.1):
-        """
-        Аппроксимация коэффициентов квадратичной формы через конечные разности
-        """
-        # Вычисление вторых производных
         d2x = (func(x0 + h, y0) - 2 * func(x0, y0) + func(x0 - h, y0)) / (h ** 2)
         d2y = (func(x0, y0 + h) - 2 * func(x0, y0) + func(x0, y0 - h)) / (h ** 2)
         d2xy = (func(x0 + h, y0 + h) - func(x0 + h, y0 - h) - func(x0 - h, y0 + h) + func(x0 - h, y0 - h)) / (
                 4 * h ** 2)
 
-        # Вычисление первых производных
         dx = (func(x0 + h, y0) - func(x0 - h, y0)) / (2 * h)
         dy = (func(x0, y0 + h) - func(x0, y0 - h)) / (2 * h)
 
@@ -174,9 +162,6 @@ class WolfeMethod:
         return {'Q': Q, 'c': c, 'const': const}
 
     def wolfe_method(self, Q, c, const=0):
-        """
-        Реализация метода Вульфа для квадратичного программирования
-        """
         try:
             x_opt = np.linalg.solve(Q, -c)
             return x_opt
@@ -186,8 +171,6 @@ class WolfeMethod:
             return x_opt
 
     def run_step_mode(self, x0=None, y0=None, eps=1e-6, max_iter=100):
-        """Инициализация пошагового режима"""
-        # Генерация случайной точки, если координаты не заданы
         if x0 is None or y0 is None:
             x0, y0 = self.point_generator.generate_single()
             self.window.textEdit.append(f"Сгенерирована случайная начальная точка: ({x0:.4f}, {y0:.4f})")
@@ -199,7 +182,6 @@ class WolfeMethod:
         self.x0 = x0
         self.y0 = y0
 
-        # Извлечение коэффициентов и нахождение оптимума
         coeffs = self.extract_quadratic_coefficients(self.current_func, x0, y0)
         Q = coeffs['Q']
         c = coeffs['c']
@@ -208,10 +190,8 @@ class WolfeMethod:
         self.x_opt = x_opt[0]
         self.y_opt = x_opt[1]
 
-        # Направление к оптимуму
         self.direction = np.array([self.x_opt - x0, self.y_opt - y0])
 
-        # Очистка текущей траектории
         self.trajectory_points = []
         self.show_current_point(x0, y0, (0, 1, 0, 1))
         self.add_trajectory_point(x0, y0)
@@ -222,7 +202,6 @@ class WolfeMethod:
         self.window.textEdit.append(f"Всего шагов: {max_iter}. Нажмите Step для следующего шага")
 
     def step(self):
-        """Выполнение одного шага в пошаговом режиме"""
         if not self.step_mode or not self.running:
             return
 
@@ -232,34 +211,25 @@ class WolfeMethod:
 
         self.current_iteration += 1
 
-        # Вычисляем прогресс
         t = self.current_iteration / self.max_iterations
 
-        # Текущая точка
         x_current = self.x0 + self.direction[0] * t
         y_current = self.y0 + self.direction[1] * t
 
-        # Обновляем визуализацию
         self.show_point(x_current, y_current)
         self.add_trajectory_point(x_current, y_current)
 
-        # Меняем цвет
         color = (t, 1 - t, 0, 1)
         self.show_current_point(x_current, y_current, color)
 
-        # Выводим информацию
         f_current = self.current_func(x_current, y_current)
         self.window.textEdit.append(f"Шаг {self.current_iteration}/{self.max_iterations}: "
                                     f"x={x_current:.6f}, y={y_current:.6f}, f={f_current:.6f}")
 
-        # Если достигли последнего шага
         if self.current_iteration == self.max_iterations:
-            # Создаем постоянную линию для этой траектории
             if len(self.trajectory_points) > 1:
-                # Генерируем случайный цвет
                 color = self.random_color()
 
-                # Создаем постоянную линию
                 permanent_line = gl.GLLinePlotItem(
                     pos=np.array(self.trajectory_points),
                     color=color,
@@ -267,12 +237,9 @@ class WolfeMethod:
                 )
                 self.view.addItem(permanent_line)
                 self.trajectory_items.append(permanent_line)
-
-                # Добавляем начальную и конечную точки
                 self.show_start_point(self.x0, self.y0, (0, 1, 0, 1))
                 self.show_end_point(self.x_opt, self.y_opt, (1, 0, 0, 1))
 
-                # Удаляем временную линию
                 if self.trajectory_line:
                     self.view.removeItem(self.trajectory_line)
                     self.trajectory_line = None
@@ -282,37 +249,21 @@ class WolfeMethod:
             self.window.textEdit.append(f"Достигнут оптимум!")
 
     def run(self, x0=None, y0=None, eps=1e-6, max_iter=100):
-        """Автоматический режим с визуализацией всех итераций"""
-        # Генерация случайной точки, если координаты не заданы
         if x0 is None or y0 is None:
             x0, y0 = self.point_generator.generate_single()
             self.window.textEdit.append(f"Сгенерирована случайная начальная точка: ({x0:.4f}, {y0:.4f})")
-
-        # Извлечение коэффициентов
         coeffs = self.extract_quadratic_coefficients(self.current_func, x0, y0)
         Q = coeffs['Q']
         c = coeffs['c']
-
-        # Нахождение оптимума
         x_opt = self.wolfe_method(Q, c)
-
-        # Генерация случайного цвета для этой траектории
         color = self.random_color()
-
-        # Создаем объект для линии траектории
         trajectory_line = gl.GLLinePlotItem(color=color, width=2)
         self.view.addItem(trajectory_line)
         self.trajectory_items.append(trajectory_line)
-
-        # Список точек траектории
         trajectory_points = []
-
-        # Начальная точка
         z0 = self.current_func(x0, y0)
         z0_vis = self.z_to_vis(z0)
         trajectory_points.append([x0, y0, z0_vis])
-
-        # Показываем начальную точку
         self.show_start_point(x0, y0, (0, 1, 0, 1))
 
         direction = x_opt - np.array([x0, y0])
@@ -327,39 +278,21 @@ class WolfeMethod:
 
             z_current = self.current_func(x_current, y_current)
             z_vis = self.z_to_vis(z_current)
-
-            # Добавляем точку в траекторию
             trajectory_points.append([x_current, y_current, z_vis])
-
-            # Обновляем линию траектории
             trajectory_line.setData(pos=np.array(trajectory_points))
-
-            # Показываем текущую точку красным маркером
             self.show_point(x_current, y_current)
-
-            # Обновляем интерфейс
             QApplication.processEvents()
             time.sleep(0.02)
-
-        # Добавляем конечную точку
         z_opt = self.current_func(x_opt[0], x_opt[1])
         z_opt_vis = self.z_to_vis(z_opt)
         trajectory_points.append([x_opt[0], x_opt[1], z_opt_vis])
-
-        # Финальное обновление линии
         trajectory_line.setData(pos=np.array(trajectory_points))
-
-        # Показываем конечную точку
         self.show_end_point(x_opt[0], x_opt[1], (1, 0, 0, 1))
-
-        # Показываем точку на основной point_item
         self.show_point(x_opt[0], x_opt[1])
 
         return x_opt[0], x_opt[1], self.current_func(x_opt[0], x_opt[1])
 
     def run_multiple(self, start_points=None, eps=1e-6, max_iter=100, random_count=100):
-        """Запуск из нескольких начальных точек"""
-        # Генерация случайных точек, если не заданы
         if start_points is None or len(start_points) == 0:
             start_points = self.point_generator.generate_multiple(random_count)
             self.window.textEdit.append(f"Сгенерировано {random_count} случайных начальных точек")
@@ -385,45 +318,33 @@ class WolfeMethod:
             self.window.textEdit.append(f"\nГлобальный минимум: x={global_min[0]:.8f}, "
                                         f"y={global_min[1]:.8f}, f={global_min[2]:.8f}")
 
-            # Подсвечиваем глобальный минимум
             self.show_point(global_min[0], global_min[1])
 
     def stop(self):
-        """Остановка вычислений"""
         self.running = False
         self.step_mode = False
 
     def reset(self):
-        """Сброс визуализации"""
         self.running = False
         self.step_mode = False
         self.current_iteration = 0
 
-        # Удаляем все линии траекторий
         for item in self.trajectory_items:
             self.view.removeItem(item)
         self.trajectory_items = []
-
-        # Удаляем все начальные точки
         for item in self.start_points_items:
             self.view.removeItem(item)
         self.start_points_items = []
-
-        # Удаляем все конечные точки
         for item in self.end_points_items:
             self.view.removeItem(item)
         self.end_points_items = []
-
-        # Удаляем текущую линию (для пошагового режима)
         if self.trajectory_line:
             self.view.removeItem(self.trajectory_line)
             self.trajectory_line = None
-
-        # Удаляем текущую точку
         if self.current_point_item:
             self.view.removeItem(self.current_point_item)
             self.current_point_item = None
 
         self.trajectory_points = []
         self.minima = []
-        self.window.textEdit.append("🔄 Визуализация метода Вульфа сброшена")
+        self.window.textEdit.append("Визуализация метода Вульфа сброшена")

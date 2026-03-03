@@ -60,10 +60,10 @@ def update_surface():
 
     if gd_method:
         gd_method.set_function(current_func, current_zmin, current_zmax)
-        gd_method.update_bounds(xmin, xmax, ymin, ymax)  # Добавлено
+        gd_method.update_bounds(xmin, xmax, ymin, ymax)
     if wolfe_method:
         wolfe_method.set_function(current_func, current_zmin, current_zmax)
-        wolfe_method.update_bounds(xmin, xmax, ymin, ymax)  # Добавлено
+        wolfe_method.update_bounds(xmin, xmax, ymin, ymax)
 
     reset_view()
 
@@ -122,7 +122,6 @@ def gradient_descent():
         start_points = [
             (np.random.uniform(xmin, xmax), np.random.uniform(ymin, ymax)) for _ in range(N)
         ]
-
     gd_method.run_multiple(start_points, eps_grad, max_iter)
 
 
@@ -134,62 +133,45 @@ def wolfe_optimization():
         return
 
     try:
-        # Пытаемся прочитать координаты из полей ввода
-        x_start = float(window.lineEdit_9.text())  # x0 для Вульфа
-        y_start = float(window.lineEdit_10.text())  # y0 для Вульфа
-        eps = float(window.lineEdit_12.text())  # eps для Вульфа
-        max_iter = int(window.lineEdit_11.text())  # max_iter для Вульфа
+        x_start = float(window.lineEdit_9.text())
+        y_start = float(window.lineEdit_10.text())
+        eps = float(window.lineEdit_12.text())
+        max_iter = int(window.lineEdit_11.text())
         start_points = [(x_start, y_start)]
 
-        # Если все поля заполнены корректно, используем введенные значения
         window.textEdit.append("=" * 60)
         window.textEdit.append("ЗАПУСК МЕТОДА ВУЛЬФА")
         window.textEdit.append(f"Параметры: x0={x_start}, y0={y_start}, eps={eps}, max_iter={max_iter}")
         window.textEdit.append("=" * 60)
 
     except ValueError:
-        # Если ошибка ввода, используем случайные точки
         window.textEdit.append("Ошибка ввода параметров метода Вульфа. Используются случайные точки")
 
-        # Получаем границы текущей поверхности
         xmin = float(window.lineEdit.text())
         xmax = float(window.lineEdit_2.text())
         ymin = float(window.lineEdit_3.text())
         ymax = float(window.lineEdit_4.text())
-
-        # Количество случайных точек для запуска
-        N = 5
-
-        # Генерируем случайные точки
+        N = 50
         start_points = [
             (np.random.uniform(xmin, xmax), np.random.uniform(ymin, ymax)) for _ in range(N)
         ]
-
-        # Стандартные параметры для метода
         eps = 1e-6
         max_iter = 100
-
-        window.textEdit.append("=" * 60)
         window.textEdit.append("ЗАПУСК МЕТОДА ВУЛЬФА СО СЛУЧАЙНЫМИ ТОЧКАМИ")
         window.textEdit.append(f"Параметры: eps={eps}, max_iter={max_iter}, точек={N}")
         window.textEdit.append("Случайные точки:")
         for i, (x, y) in enumerate(start_points):
             window.textEdit.append(f"  Точка {i + 1}: ({x:.4f}, {y:.4f})")
-        window.textEdit.append("=" * 60)
 
-    # Создаем или обновляем объект метода Вульфа
     if wolfe_method is None:
         wolfe_method = WolfeMethod(view, current_func, current_zmin, current_zmax, point_item, window)
     else:
         wolfe_method.reset()
         wolfe_method.set_function(current_func, current_zmin, current_zmax)
-
-    # Запускаем метод Вульфа с несколькими начальными точками
-    wolfe_method.run_multiple(start_points, eps, max_iter, random_count=100)
+    wolfe_method.run_multiple(start_points, eps, max_iter, N)
 
 
 def wolfe_step():
-    """Пошаговый режим метода Вульфа"""
     global wolfe_method
 
     if current_func is None:
@@ -198,35 +180,24 @@ def wolfe_step():
 
     if wolfe_method is None:
         try:
-            # Пытаемся прочитать координаты из полей ввода
             x_start = float(window.lineEdit_9.text())
             y_start = float(window.lineEdit_10.text())
             eps = float(window.lineEdit_12.text())
             max_iter = int(window.lineEdit_11.text())
         except ValueError:
-            # Если ошибка ввода, используем случайную точку
             window.textEdit.append("Ошибка ввода параметров. Используется случайная начальная точка")
-
-            # Получаем границы текущей поверхности
             xmin = float(window.lineEdit.text())
             xmax = float(window.lineEdit_2.text())
             ymin = float(window.lineEdit_3.text())
             ymax = float(window.lineEdit_4.text())
-
-            # Генерируем случайную точку
             x_start = np.random.uniform(xmin, xmax)
             y_start = np.random.uniform(ymin, ymax)
             eps = 1e-6
             max_iter = 50
-
-        # Создаем объект метода Вульфа
         wolfe_method = WolfeMethod(view, current_func, current_zmin, current_zmax, point_item, window)
         wolfe_method.set_function(current_func, current_zmin, current_zmax)
-
-        # Запускаем пошаговый режим
         wolfe_method.run_step_mode(x_start, y_start, eps, max_iter)
     else:
-        # Делаем следующий шаг
         wolfe_method.step()
 def stop_gd():
     global gd_method
@@ -285,29 +256,24 @@ point_item = gl.GLScatterPlotItem(
 point_item.setGLOptions('opaque')
 view.addItem(point_item)
 
-# Устанавливаем значения по умолчанию
-window.lineEdit_6.setText("2")  # x0 для градиентного спуска
-window.lineEdit_7.setText("2")  # y0 для градиентного спуска
-window.lineEdit_8.setText("1e-5")  # eps для градиентного спуска
-window.lineEdit_9.setText("2")  # x0 для метода Вульфа
-window.lineEdit_10.setText("2")  # y0 для метода Вульфа
-window.lineEdit_11.setText("50")  # max_iter для метода Вульфа
-window.lineEdit_12.setText("1e-6")  # eps для метода Вульфа
+window.lineEdit_6.setText("2")
+window.lineEdit_7.setText("2")
+window.lineEdit_8.setText("1e-5")
+window.lineEdit_9.setText("2")
+window.lineEdit_10.setText("2")
+window.lineEdit_11.setText("50")
+window.lineEdit_12.setText("1e-6")
 
-# Подключаем сигналы для построения поверхности
 window.pushButton.clicked.connect(update_surface)
 window.comboBox.currentTextChanged.connect(on_function_changed)
 
-# Подключаем сигналы для градиентного спуска (первая вкладка)
-window.pushButton_2.clicked.connect(gradient_descent)  # Start
-window.pushButton_4.clicked.connect(stop_gd)  # Stop (общая остановка)
-window.pushButton_5.clicked.connect(reset_gd)  # Reset (общий сброс)
-
-# Подключаем сигналы для метода Вульфа (вторая вкладка)
-window.pushButton_6.clicked.connect(wolfe_optimization)  # Start
-window.pushButton_7.clicked.connect(stop_wolfe)  # Stop
-window.pushButton_8.clicked.connect(reset_wolfe)  # Reset
-window.pushButton_9.clicked.connect(wolfe_step)  # Step
+window.pushButton_2.clicked.connect(gradient_descent)
+window.pushButton_4.clicked.connect(stop_gd)
+window.pushButton_5.clicked.connect(reset_gd)
+window.pushButton_6.clicked.connect(wolfe_optimization)
+window.pushButton_7.clicked.connect(stop_wolfe)
+window.pushButton_8.clicked.connect(reset_wolfe)
+window.pushButton_9.clicked.connect(wolfe_step)
 
 window.show()
 sys.exit(app.exec())

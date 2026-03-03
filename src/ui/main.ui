@@ -309,6 +309,11 @@
              </item>
              <item>
               <property name="text">
+               <string>Кривое яйцо</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
                <string>пип гупип</string>
               </property>
              </item>
@@ -415,6 +420,26 @@
              <item>
               <property name="text">
                <string>Функция Стыбинского-Танга</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Шляпа мексиканца</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Седло обезьяны</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Лист клевера</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Синусоидальная рябь</string>
               </property>
              </item>
             </widget>
