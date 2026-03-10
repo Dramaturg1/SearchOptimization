@@ -61,7 +61,6 @@ def holder(X,Y):
     return -np.abs(np.sin(X)*np.cos(Y)*np.exp(np.abs(1-np.sqrt(X*X+Y*Y)/np.pi)))
 
 def pip_gupip(X, Y):
-    """Функция из методички ЛР2: f(x) = 2x1² + 2x1x2 + 2x2² - 4x1 - 6x2"""
     return 2 * X ** 2 + 2 * X * Y + 2 * Y ** 2 - 4 * X - 6 * Y
 
 def guugy(X, Y):

@@ -16,12 +16,11 @@ current_zmax = None
 gd_method = None
 wolfe_method = None
 
-# Ограничения из методички для тестовой функции
+# Ограничения
 DEFAULT_CONSTRAINTS = {
     "A": np.array([[1, 1], [1, 2], [-1, 0], [0, -1]]),
     "b": np.array([2, 3, 0, 0])
 }
-
 
 def update_surface():
     global surface_item, current_func, current_zmin, current_zmax, gd_method, wolfe_method
@@ -64,7 +63,6 @@ def update_surface():
     current_zmin = zmin
     current_zmax = zmax
 
-    # Обновление методов
     if gd_method:
         gd_method.set_function(current_func, current_zmin, current_zmax)
         gd_method.update_bounds(xmin, xmax, ymin, ymax)
@@ -72,14 +70,8 @@ def update_surface():
     if wolfe_method:
         wolfe_method.set_function(current_func, current_zmin, current_zmax)
         wolfe_method.update_bounds(xmin, xmax, ymin, ymax)
-        # Установка ограничений по умолчанию для тестовой функции
         if name == "Тестовая функция (методичка)":
             wolfe_method.set_constraints(DEFAULT_CONSTRAINTS["A"], DEFAULT_CONSTRAINTS["b"])
-            window.textEdit.append("Установлены ограничения из методички:")
-            window.textEdit.append("  x1 + x2 ≤ 2")
-            window.textEdit.append("  x1 + 2x2 ≤ 3")
-            window.textEdit.append("  x1 ≥ 0, x2 ≥ 0")
-
     reset_view()
 
 
@@ -103,20 +95,15 @@ def on_function_changed():
     window.lineEdit_4.setText(str(data["ymax"]))
     window.lineEdit_5.setText(str(data["points"]))
 
-    # Очистка предыдущих результатов при смене функции
     reset_wolfe()
     reset_gd()
-
-    window.textEdit.append(f"\nВыбрана функция: {name}")
-    if name == "Тестовая функция (методичка)":
-        window.textEdit.append("Для этой функции доступны ограничения из методички")
 
 
 def gradient_descent():
     global gd_method
 
     if current_func is None:
-        window.textEdit.append("Сначала построй поверхность")
+        window.textEdit.append("Сначала постройте поверхность")
         return
 
     try:
@@ -136,7 +123,6 @@ def gradient_descent():
         x_start = float(window.lineEdit_6.text())
         y_start = float(window.lineEdit_7.text())
         start_points = [(x_start, y_start)]
-        window.textEdit.append(f"\nЗапуск градиентного спуска из точки ({x_start}, {y_start})")
     except ValueError:
         xmin = float(window.lineEdit.text())
         xmax = float(window.lineEdit_2.text())
@@ -146,7 +132,6 @@ def gradient_descent():
         start_points = [
             (np.random.uniform(xmin, xmax), np.random.uniform(ymin, ymax)) for _ in range(N)
         ]
-        window.textEdit.append(f"\nЗапуск градиентного спуска из {N} случайных точек")
 
     gd_method.run_multiple(start_points, eps_grad, max_iter)
 
@@ -155,28 +140,25 @@ def wolfe_optimization():
     global wolfe_method
 
     if current_func is None:
-        window.textEdit.append("Сначала построй поверхность")
+        window.textEdit.append("Сначала постройте поверхность")
         return
 
-    # Чтение параметров из полей ввода
     try:
-        # Исправлено: правильные имена полей
-        x_start = float(window.lineEdit_9.text())  # x0 для Вульфа
+
+        x_start = float(window.lineEdit_9.text())   # x0 для Вульфа
         y_start = float(window.lineEdit_10.text())  # y0 для Вульфа
-        eps = float(window.lineEdit_12.text())  # точность
-        max_iter = int(window.lineEdit_11.text())  # макс итераций
+        eps = float(window.lineEdit_12.text())      # точность
+        max_iter = int(window.lineEdit_11.text())   # макс итераций
 
         start_points = [(x_start, y_start)]
 
-        window.textEdit.append("\n" + "=" * 60)
-        window.textEdit.append("ЗАПУСК МЕТОДА ВУЛФА")
-        window.textEdit.append("=" * 60)
+        window.textEdit.append("Метод Вулфа:")
         window.textEdit.append(f"Параметры:")
         window.textEdit.append(f"  Начальная точка: ({x_start:.4f}, {y_start:.4f})")
         window.textEdit.append(f"  Точность: {eps}")
         window.textEdit.append(f"  Макс. итераций: {max_iter}")
 
-        # Проверка наличия ограничений для тестовой функции
+
         if window.comboBox.currentText() == "Тестовая функция (методичка)":
             window.textEdit.append("\nОграничения задачи:")
             window.textEdit.append("  x1 + x2 ≤ 2")
@@ -198,31 +180,21 @@ def wolfe_optimization():
         eps = 1e-6
         max_iter = 100
 
-        window.textEdit.append("\n" + "=" * 60)
-        window.textEdit.append("ЗАПУСК МЕТОДА ВУЛФА СО СЛУЧАЙНЫМИ ТОЧКАМИ")
-        window.textEdit.append("=" * 60)
+        window.textEdit.append("Метод Вулфа со случайными точками: ")
         window.textEdit.append(f"Параметры:")
         window.textEdit.append(f"  Точность: {eps}")
         window.textEdit.append(f"  Макс. итераций: {max_iter}")
         window.textEdit.append(f"  Количество точек: {N}")
-        window.textEdit.append("\nСлучайные точки:")
-        for i, (x, y) in enumerate(start_points[:5]):  # Показываем только первые 5
-            window.textEdit.append(f"  Точка {i + 1}: ({x:.4f}, {y:.4f})")
-        if len(start_points) > 5:
-            window.textEdit.append(f"  ... и еще {len(start_points) - 5} точек")
 
-    # Создание или сброс метода Вулфа
     if wolfe_method is None:
         wolfe_method = WolfeMethod(view, current_func, current_zmin, current_zmax, point_item, window)
     else:
         wolfe_method.reset()
         wolfe_method.set_function(current_func, current_zmin, current_zmax)
 
-    # Установка ограничений для тестовой функции
     if window.comboBox.currentText() == "Тестовая функция (методичка)":
         wolfe_method.set_constraints(DEFAULT_CONSTRAINTS["A"], DEFAULT_CONSTRAINTS["b"])
 
-    # Запуск метода
     wolfe_method.run_multiple(start_points, eps, max_iter, len(start_points))
 
 
@@ -230,7 +202,7 @@ def wolfe_step():
     global wolfe_method
 
     if current_func is None:
-        window.textEdit.append("Сначала построй поверхность")
+        window.textEdit.append("Сначала постройте поверхность")
         return
 
     if wolfe_method is None:
@@ -243,11 +215,9 @@ def wolfe_step():
             wolfe_method = WolfeMethod(view, current_func, current_zmin, current_zmax, point_item, window)
             wolfe_method.set_function(current_func, current_zmin, current_zmax)
 
-            # Установка ограничений для тестовой функции
             if window.comboBox.currentText() == "Тестовая функция (методичка)":
                 wolfe_method.set_constraints(DEFAULT_CONSTRAINTS["A"], DEFAULT_CONSTRAINTS["b"])
 
-            window.textEdit.append(f"\nЗапуск пошагового режима из точки ({x_start}, {y_start})")
             wolfe_method.run_step_mode(x_start, y_start, eps, max_iter)
 
         except ValueError:
@@ -268,55 +238,48 @@ def wolfe_step():
             if window.comboBox.currentText() == "Тестовая функция (методичка)":
                 wolfe_method.set_constraints(DEFAULT_CONSTRAINTS["A"], DEFAULT_CONSTRAINTS["b"])
 
-            window.textEdit.append(f"\nЗапуск пошагового режима из случайной точки ({x_start:.4f}, {y_start:.4f})")
             wolfe_method.run_step_mode(x_start, y_start, eps, max_iter)
     else:
         if hasattr(wolfe_method, 'step_mode') and wolfe_method.step_mode:
             wolfe_method.step()
         else:
-            window.textEdit.append("Пошаговый режим не активен. Запустите заново с пошаговым режимом.")
+            window.textEdit.append("Пошаговый режим не активен")
 
 
 def stop_gd():
     global gd_method
     if gd_method:
         gd_method.stop()
-        window.textEdit.append("Градиентный спуск остановлен")
 
 
 def reset_gd():
     global gd_method
     if gd_method:
         gd_method.reset()
-        window.textEdit.append("Визуализация градиентного спуска очищена")
 
 
 def stop_wolfe():
     global wolfe_method
     if wolfe_method:
         wolfe_method.stop()
-        window.textEdit.append("Метод Вулфа остановлен")
 
 
 def reset_wolfe():
     global wolfe_method
     if wolfe_method:
         wolfe_method.reset()
-    window.textEdit.append("Визуализация метода Вулфа очищена")
 
 
-# Инициализация приложения
+
 app = QApplication.instance()
 if app is None:
     app = QApplication(sys.argv)
 
-# Загрузка UI
 loader = CustomLoader()
 current_dir = os.path.dirname(os.path.abspath(__file__))
 ui_path = os.path.join(current_dir, "ui", "main.ui")
 window = loader.load(ui_path)
 
-# Создание 3D вида
 view = gl.GLViewWidget(parent=window.widget)
 layout = window.widget.layout()
 if layout is None:
@@ -324,19 +287,16 @@ if layout is None:
     window.widget.setLayout(layout)
 layout.addWidget(view)
 
-# Добавление сетки
 grid = gl.GLGridItem()
 grid.setSize(10, 10)
 grid.setSpacing(1, 1)
 grid.translate(0, 0, -1)
 view.addItem(grid)
 
-# Добавление осей
 axis = gl.GLAxisItem()
 axis.setSize(5, 5, 5)
 view.addItem(axis)
 
-# Точка для отображения текущего положения
 point_item = gl.GLScatterPlotItem(
     size=15,
     color=(1, 0, 0, 1)
@@ -344,13 +304,12 @@ point_item = gl.GLScatterPlotItem(
 point_item.setGLOptions('opaque')
 view.addItem(point_item)
 
-# Установка значений по умолчанию
-window.lineEdit_6.setText("2")  # x0 для градиентного спуска
-window.lineEdit_7.setText("2")  # y0 для градиентного спуска
-window.lineEdit_8.setText("1e-5")  # точность градиентного спуска
-window.lineEdit_9.setText("2")  # x0 для метода Вулфа
-window.lineEdit_10.setText("2")  # y0 для метода Вулфа
-window.lineEdit_11.setText("50")  # макс итераций для Вулфа
+window.lineEdit_6.setText("2")      # x0 для градиентного спуска
+window.lineEdit_7.setText("2")      # y0 для градиентного спуска
+window.lineEdit_8.setText("1e-5")   # точность градиентного спуска
+window.lineEdit_9.setText("2")      # x0 для метода Вулфа
+window.lineEdit_10.setText("2")     # y0 для метода Вулфа
+window.lineEdit_11.setText("50")    # макс итераций для Вулфа
 window.lineEdit_12.setText("1e-6")  # точность для Вулфа
 
 # Подключение сигналов
@@ -368,7 +327,6 @@ window.pushButton_7.clicked.connect(stop_wolfe)  # Стоп
 window.pushButton_8.clicked.connect(reset_wolfe)  # Сброс
 window.pushButton_9.clicked.connect(wolfe_step)  # Шаг
 
-# Загрузка тестовой функции по умолчанию
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()
 

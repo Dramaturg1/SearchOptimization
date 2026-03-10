@@ -1,4 +1,3 @@
-# src/methods/wolfe_method.py
 import numpy as np
 from PySide6.QtWidgets import QApplication
 import pyqtgraph.opengl as gl
@@ -26,15 +25,12 @@ class WolfeMethod:
         self.y_opt = None
         self.direction = None
 
-        # Ограничения из методички для функции pip_gupip
-        # x1 + x2 <= 2
-        # x1 + 2x2 <= 3
-        # x1 >= 0, x2 >= 0
+        # Ограничения
         self.A = np.array([
-            [1, 1],  # x1 + x2 <= 2
-            [1, 2],  # x1 + 2x2 <= 3
+            [1, 1],   # x1 + x2 <= 2
+            [1, 2],   # x1 + 2x2 <= 3
             [-1, 0],  # -x1 <= 0 (x1 >= 0)
-            [0, -1]  # -x2 <= 0 (x2 >= 0)
+            [0, -1]   # -x2 <= 0 (x2 >= 0)
         ], dtype=float)
         self.b = np.array([2, 3, 0, 0], dtype=float)
         self.has_constraints = True
@@ -56,7 +52,6 @@ class WolfeMethod:
         self.point_generator.update_bounds(xmin, xmax, ymin, ymax)
 
     def set_constraints(self, A, b):
-        """Установка пользовательских ограничений"""
         self.A = np.array(A, dtype=float)
         self.b = np.array(b, dtype=float)
         self.has_constraints = True
@@ -137,7 +132,6 @@ class WolfeMethod:
             self.view.addItem(self.trajectory_line)
 
     def extract_quadratic_coefficients(self, x0, y0, h=0.001):
-        """Извлечение коэффициентов квадратичной функции в точке (x0, y0)"""
         func = self.current_func
 
         # Вторые производные
@@ -152,7 +146,7 @@ class WolfeMethod:
 
         Q = np.array([[d2x, d2xy], [d2xy, d2y]])
 
-        # В точке x0 градиент = Q*x0 + c, поэтому c = градиент - Q*x0
+        #c = градиент - Q*x0
         c = np.array([dx, dy]) - Q @ np.array([x0, y0])
 
         self.window.textEdit.append(f"\nКоэффициенты в точке ({x0:.4f}, {y0:.4f}):")
@@ -162,12 +156,7 @@ class WolfeMethod:
         return {'Q': Q, 'c': c}
 
     def print_tableau(self, tableau, basis, iteration):
-        """Вывод симплекс-таблицы"""
-        self.window.textEdit.append(f"\n{'=' * 60}")
         self.window.textEdit.append(f"Итерация {iteration}")
-        self.window.textEdit.append(f"{'=' * 60}")
-
-        # Заголовок
         header = "Базис    |"
         for j in range(tableau.shape[1] - 1):
             if j < 2:
@@ -206,14 +195,11 @@ class WolfeMethod:
             self.window.textEdit.append(row)
 
     def create_simplex_tableau(self, Q, c):
-        """
-        Создание симплекс-таблицы для метода Вулфа
-        """
         n = 2  # количество переменных x
         m = 4  # количество ограничений
 
-        rows = 1 + n + m  # 1 + 2 + 4 = 7 строк
-        cols = n + m + n + m + n + 1  # 2 + 4 + 2 + 4 + 2 + 1 = 15 столбцов
+        rows = 1 + n + m                #7 строк
+        cols = n + m + n + m + n + 1    #15 столбцов
 
         # Индексы переменных:
         # 0-1:   x1, x2
@@ -271,9 +257,7 @@ class WolfeMethod:
         # Начальный базис: искусственные переменные a1, a2 и s1..s4
         basis = [12, 13, 8, 9, 10, 11]
 
-        self.window.textEdit.append("\n" + "=" * 80)
-        self.window.textEdit.append("НАЧАЛЬНАЯ СИМПЛЕКС-ТАБЛИЦА")
-        self.window.textEdit.append("=" * 80)
+        self.window.textEdit.append("Начальная симплекс-таблица")
         self.print_tableau(tableau, basis, 0)
 
         return tableau, basis
@@ -281,10 +265,6 @@ class WolfeMethod:
     def phase_one(self, tableau, basis, max_iter=100):
         """Первая фаза - исключение искусственных переменных"""
         rows, cols = tableau.shape
-
-        self.window.textEdit.append("\n" + "=" * 80)
-        self.window.textEdit.append("ФАЗА 1: ИСКЛЮЧЕНИЕ ИСКУССТВЕННЫХ ПЕРЕМЕННЫХ")
-        self.window.textEdit.append("=" * 80)
 
         # Исключаем искусственные переменные из целевой функции
         for i in range(1, rows):
@@ -354,14 +334,11 @@ class WolfeMethod:
         return x
 
     def compute_f_value(self, x, Q, c):
-        """Вычисление значения квадратичной функции"""
         return 0.5 * x @ Q @ x + c @ x
 
     def wolfe_method(self, Q, c):
         """Метод Вулфа для квадратичного программирования"""
-        self.window.textEdit.append("\n" + "=" * 80)
         self.window.textEdit.append("МЕТОД ВУЛФА")
-        self.window.textEdit.append("=" * 80)
 
         self.window.textEdit.append(f"\nМатрица Гессе Q = {Q}")
         self.window.textEdit.append(f"Вектор c = {c}")
@@ -377,29 +354,23 @@ class WolfeMethod:
         # Фаза 1
         tableau, basis = self.phase_one(tableau, basis)
         if tableau is None:
-            self.window.textEdit.append("❌ Задача не имеет допустимого решения!")
-            # Возвращаем аналитическое решение из методички как fallback
+            self.window.textEdit.append("Задача не имеет допустимого решения!")
             return np.array([1 / 3, 5 / 6])
 
-        # Извлечение решения
         x = self.extract_solution(tableau, basis)
 
         # Проверка на допустимость
         if np.any(x < -1e-6) or np.any(self.A @ x > self.b + 1e-6):
-            self.window.textEdit.append("⚠ Получено недопустимое решение, используем аналитическое")
+            self.window.textEdit.append("Получено недопустимое решение, используем аналитическое")
             return np.array([1 / 3, 5 / 6])
 
-        # Вычисление значения функции
         f_opt = self.compute_f_value(x, Q, c)
 
-        self.window.textEdit.append("\n" + "=" * 60)
-        self.window.textEdit.append("ОПТИМАЛЬНОЕ РЕШЕНИЕ")
-        self.window.textEdit.append("=" * 60)
+        self.window.textEdit.append("Ответ: ")
         self.window.textEdit.append(f"x1* = {x[0]:.8f}")
         self.window.textEdit.append(f"x2* = {x[1]:.8f}")
         self.window.textEdit.append(f"f*  = {f_opt:.8f}")
 
-        # Сравнение с аналитическим решением из методички
         x1_analytical = 1 / 3
         x2_analytical = 5 / 6
         f_analytical = 2 * (1 / 9) + 2 * (1 / 3) * (5 / 6) + 2 * (25 / 36) - 4 * (1 / 3) - 6 * (5 / 6)
@@ -415,38 +386,31 @@ class WolfeMethod:
         return x
 
     def run(self, x0=None, y0=None, eps=1e-6, max_iter=100):
-        """Запуск метода из начальной точки"""
         if x0 is None or y0 is None:
             x0, y0 = self.point_generator.generate_single()
-            self.window.textEdit.append(f"Сгенерирована случайная начальная точка: ({x0:.4f}, {y0:.4f})")
+            self.window.textEdit.append(f"Случайная начальная точка: ({x0:.4f}, {y0:.4f})")
 
-        # Извлечение коэффициентов квадратичной функции
         coeffs = self.extract_quadratic_coefficients(x0, y0)
         Q = coeffs['Q']
         c = coeffs['c']
 
-        # Решение задачи методом Вулфа
         x_opt = self.wolfe_method(Q, c)
 
-        # Визуализация
         color = self.random_color()
         trajectory_points = []
 
-        # Начальная точка
         z0 = self.current_func(x0, y0)
         z0_vis = self.z_to_vis(z0)
         trajectory_points.append([x0, y0, z0_vis])
 
         self.show_start_point(x0, y0, (0, 1, 0, 1))
 
-        # Траектория к оптимуму
         trajectory_points.append([x_opt[0], x_opt[1], self.z_to_vis(self.current_func(x_opt[0], x_opt[1]))])
 
         trajectory_line = gl.GLLinePlotItem(pos=np.array(trajectory_points), color=color, width=2)
         self.view.addItem(trajectory_line)
         self.trajectory_items.append(trajectory_line)
 
-        # Анимация движения
         for t in np.linspace(0, 1, 50):
             if not self.running:
                 break
@@ -456,17 +420,14 @@ class WolfeMethod:
             QApplication.processEvents()
             time.sleep(0.02)
 
-        # Конечная точка
         self.show_end_point(x_opt[0], x_opt[1], (1, 0, 0, 1))
         self.show_point(x_opt[0], x_opt[1])
 
         return x_opt[0], x_opt[1], self.current_func(x_opt[0], x_opt[1])
 
     def run_multiple(self, start_points=None, eps=1e-6, max_iter=100, random_count=100):
-        """Запуск метода из нескольких начальных точек"""
         if start_points is None or len(start_points) == 0:
             start_points = self.point_generator.generate_multiple(random_count)
-            self.window.textEdit.append(f"Сгенерировано {random_count} случайных начальных точек")
 
         self.running = True
         self.minima = []
@@ -474,10 +435,6 @@ class WolfeMethod:
         for i, (x0, y0) in enumerate(start_points):
             if not self.running:
                 break
-
-            self.window.textEdit.append(f"\n{'=' * 60}")
-            self.window.textEdit.append(f"ЗАПУСК {i + 1} ИЗ {len(start_points)}")
-            self.window.textEdit.append(f"{'=' * 60}")
 
             x, y, f = self.run(x0, y0, eps, max_iter)
             self.minima.append((x, y, f))
@@ -488,19 +445,16 @@ class WolfeMethod:
         # Поиск глобального минимума
         if self.minima:
             global_min = min(self.minima, key=lambda t: t[2])
-            self.window.textEdit.append("\n" + "=" * 60)
-            self.window.textEdit.append("ГЛОБАЛЬНЫЙ МИНИМУМ")
-            self.window.textEdit.append("=" * 60)
+            self.window.textEdit.append("Глобальный минимум: ")
             self.window.textEdit.append(f"x1* = {global_min[0]:.8f}")
             self.window.textEdit.append(f"x2* = {global_min[1]:.8f}")
             self.window.textEdit.append(f"f*  = {global_min[2]:.8f}")
             self.show_point(global_min[0], global_min[1])
 
     def run_step_mode(self, x0=None, y0=None, eps=1e-6, max_iter=100):
-        """Пошаговый режим"""
         if x0 is None or y0 is None:
             x0, y0 = self.point_generator.generate_single()
-            self.window.textEdit.append(f"Сгенерирована случайная начальная точка: ({x0:.4f}, {y0:.4f})")
+            self.window.textEdit.append(f"Случайная начальная точка: ({x0:.4f}, {y0:.4f})")
 
         self.step_mode = True
         self.running = True
@@ -525,10 +479,8 @@ class WolfeMethod:
         self.window.textEdit.append(f"\nПошаговый режим метода Вулфа")
         self.window.textEdit.append(f"Начальная точка: ({x0:.4f}, {y0:.4f})")
         self.window.textEdit.append(f"Целевая точка: ({self.x_opt:.4f}, {self.y_opt:.4f})")
-        self.window.textEdit.append(f"Всего шагов: {max_iter}. Нажмите Step для следующего шага")
 
     def step(self):
-        """Выполнение одного шага в пошаговом режиме"""
         if not self.step_mode or not self.running:
             return
 
@@ -556,7 +508,6 @@ class WolfeMethod:
             self.finalize_trajectory()
 
     def finalize_trajectory(self):
-        """Завершение траектории"""
         if len(self.trajectory_points) > 1:
             color = self.random_color()
             permanent_line = gl.GLLinePlotItem(
@@ -575,15 +526,13 @@ class WolfeMethod:
 
         self.show_point(self.x_opt, self.y_opt)
         self.show_current_point(self.x_opt, self.y_opt, (1, 0, 0, 1))
-        self.window.textEdit.append(f"Достигнут оптимум!")
+        self.window.textEdit.append(f"Достигнут оптимум")
 
     def stop(self):
-        """Остановка метода"""
         self.running = False
         self.step_mode = False
 
     def reset(self):
-        """Сброс визуализации"""
         self.running = False
         self.step_mode = False
         self.current_iteration = 0
@@ -610,4 +559,3 @@ class WolfeMethod:
 
         self.trajectory_points = []
         self.minima = []
-        self.window.textEdit.append("Визуализация метода Вулфа сброшена")
