@@ -28,7 +28,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>1</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -314,17 +314,17 @@
              </item>
              <item>
               <property name="text">
-               <string>пип гупип</string>
+               <string>Квадратичная функция1</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>гууги</string>
+               <string>вадратичная функция2</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>досвидание</string>
+               <string>Квадратичная функция3</string>
               </property>
              </item>
              <item>

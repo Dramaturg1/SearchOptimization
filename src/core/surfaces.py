@@ -245,7 +245,7 @@ surface_data = {
         "ymax": 10,
         "points": 500
     },
-    "пип гупип": {
+    "Квадратичная функция1": {
         "func": pip_gupip,
         "xmin": -10,
         "xmax": 10,
@@ -253,7 +253,7 @@ surface_data = {
         "ymax": 10,
         "points": 500
     },
-    "гууги": {
+    "Квадратичная функция2": {
         "func": guugy,
         "xmin": -10,
         "xmax": 10,
@@ -261,7 +261,7 @@ surface_data = {
         "ymax": 10,
         "points": 500
     },
-    "досвидание": {
+    "Квадратичная функция3": {
         "func": dosvidanie,
         "xmin": -10,
         "xmax": 10,
