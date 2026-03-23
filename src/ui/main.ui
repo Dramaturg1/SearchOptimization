@@ -28,7 +28,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>2</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -136,6 +136,107 @@
            <attribute name="title">
             <string>2</string>
            </attribute>
+           <widget class="QGroupBox" name="groupBox_4">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>228</width>
+              <height>175</height>
+             </rect>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Метод вульфа для квадратичной функ</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_10">
+                   <property name="text">
+                    <string>x0:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="lineEdit_10"/>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_11">
+                   <property name="text">
+                    <string>y0:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLineEdit" name="lineEdit_11"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_12">
+                   <property name="text">
+                    <string>eps:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="lineEdit_12"/>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="label_13">
+                   <property name="text">
+                    <string>M:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLineEdit" name="lineEdit_13"/>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0">
+                  <widget class="QPushButton" name="pushButton_6">
+                   <property name="text">
+                    <string>Start</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="pushButton_7">
+                   <property name="text">
+                    <string>Stop</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pushButton_8">
+                   <property name="text">
+                    <string>Reset</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QPushButton" name="pushButton_9">
+                   <property name="text">
+                    <string>Step</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </widget>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
@@ -208,17 +309,22 @@
              </item>
              <item>
               <property name="text">
-               <string>пип гупип</string>
+               <string>Кривое яйцо</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>гууги</string>
+               <string>Квадратичная функция1</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>досвидание</string>
+               <string>вадратичная функция2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Квадратичная функция3</string>
               </property>
              </item>
              <item>
@@ -314,6 +420,26 @@
              <item>
               <property name="text">
                <string>Функция Стыбинского-Танга</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Шляпа мексиканца</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Седло обезьяны</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Лист клевера</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Синусоидальная рябь</string>
               </property>
              </item>
             </widget>
