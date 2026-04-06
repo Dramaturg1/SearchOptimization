@@ -6,6 +6,7 @@ from src.core.surfaces import surface_data
 from src.methods.gradient_descent import GradientDescentMethod
 from src.methods.wolfe_method import WolfeMethod
 from src.methods.genetic_algorithm import GeneticAlgorithm
+from src.methods.pso_method import PSOMethod
 import numpy as np
 import sys
 import os
@@ -17,6 +18,7 @@ current_zmax = None
 gd_method = None
 wolfe_method = None
 ga_method = None
+pso_method = None
 
 # Ограничения
 DEFAULT_CONSTRAINTS = {
@@ -328,7 +330,83 @@ def reset_ga():
     if ga_method:
         ga_method.reset()
 
+def pso_optimization():
+    global pso_method
 
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        n_particles = int(window.lineEdit_17.text())
+        max_iter = int(window.lineEdit_16.text())
+    except:
+        window.textEdit.append("Ошибка ввода параметров PSO")
+        return
+
+    if pso_method is None:
+        pso_method = PSOMethod(view, current_func, current_zmin, current_zmax, window)
+    else:
+        pso_method.reset()
+        pso_method.set_function(current_func, current_zmin, current_zmax)
+
+    pso_method.use_mutation = window.radioButton_4.isChecked()      # ← radioButton_4
+    pso_method.use_crossover = window.radioButton_5.isChecked()     # ← radioButton_5
+    pso_method.use_convergence = window.radioButton_6.isChecked()   # ← radioButton_6
+    pso_method.update_bounds(
+        float(window.lineEdit.text()),
+        float(window.lineEdit_2.text()),
+        float(window.lineEdit_3.text()),
+        float(window.lineEdit_4.text())
+    )
+
+    pso_method.run(n_particles, max_iter)
+
+def pso_step():
+    global pso_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    if pso_method is None:
+        try:
+            n_particles = int(window.lineEdit_17.text())
+            max_iter = int(window.lineEdit_16.text())
+        except:
+            window.textEdit.append("Ошибка ввода параметров PSO")
+            return
+
+        pso_method = PSOMethod(view, current_func, current_zmin, current_zmax, window)
+        pso_method.set_function(current_func, current_zmin, current_zmax)
+        pso_method.use_mutation = window.radioButton_4.isChecked()    # ← radioButton_4
+        pso_method.use_crossover = window.radioButton_5.isChecked()   # ← radioButton_5
+        pso_method.use_convergence = window.radioButton_6.isChecked() # ← radioButton_6
+        pso_method.update_bounds(
+            float(window.lineEdit.text()),
+            float(window.lineEdit_2.text()),
+            float(window.lineEdit_3.text()),
+            float(window.lineEdit_4.text())
+        )
+        pso_method.run_step_mode(n_particles, max_iter)
+    else:
+        if hasattr(pso_method, 'step_mode') and pso_method.step_mode:
+            pso_method.step()
+        else:
+            window.textEdit.append("Пошаговый режим не активен. Нажмите 'Старт' для запуска.")
+
+
+def stop_pso():
+    global pso_method
+    if pso_method:
+        pso_method.stop()
+        window.textEdit.append("PSO остановлен")
+
+def reset_pso():
+    global pso_method
+    if pso_method:
+        pso_method.reset()
+    window.textEdit.append("Визуализация PSO очищена")
 
 app = QApplication.instance()
 if app is None:
@@ -371,6 +449,13 @@ window.lineEdit_10.setText("2")     # y0 для метода Вулфа
 window.lineEdit_11.setText("50")    # макс итераций для Вулфа
 window.lineEdit_12.setText("1e-6")  # точность для Вулфа
 
+# Значения по умолчанию для PSO
+window.lineEdit_17.setText("30")
+window.lineEdit_16.setText("50")
+window.radioButton_4.setChecked(False)
+window.radioButton_5.setChecked(False)
+window.radioButton_6.setChecked(False)
+
 # Подключение сигналов
 window.pushButton.clicked.connect(update_surface)  # Построить
 window.comboBox.currentTextChanged.connect(on_function_changed)  # Смена функции
@@ -388,6 +473,12 @@ window.pushButton_9.clicked.connect(wolfe_step)  # Шаг
 window.pushButton_10.clicked.connect(genetic_algorithm_run)
 window.pushButton_11.clicked.connect(stop_ga)  # Остановка
 window.pushButton_12.clicked.connect(reset_ga)
+
+# PSO (вкладка 4)
+window.pushButton_13.clicked.connect(pso_optimization)   # Start
+window.pushButton_14.clicked.connect(stop_pso)           # Stop
+window.pushButton_15.clicked.connect(reset_pso)          # Reset
+window.pushButton_16.clicked.connect(pso_step)           # Step
 
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()

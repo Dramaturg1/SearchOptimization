@@ -28,7 +28,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -345,6 +345,115 @@
            <attribute name="title">
             <string>4</string>
            </attribute>
+           <widget class="QGroupBox" name="groupBox_6">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>224</width>
+              <height>199</height>
+             </rect>
+            </property>
+            <property name="title">
+             <string>Алгоритм роя частиц</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <item>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="1" column="1">
+                <widget class="QLineEdit" name="lineEdit_16"/>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLineEdit" name="lineEdit_17"/>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>Частиц</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Поколений</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_12">
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_4">
+                   <property name="text">
+                    <string>Мутации</string>
+                   </property>
+                   <property name="autoExclusive">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_5">
+                   <property name="text">
+                    <string>Скрещивание</string>
+                   </property>
+                   <property name="autoExclusive">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="radioButton_6">
+                   <property name="text">
+                    <string>Сближение</string>
+                   </property>
+                   <property name="autoExclusive">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <item>
+                  <widget class="QPushButton" name="pushButton_13">
+                   <property name="text">
+                    <string>Запуск</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_14">
+                   <property name="text">
+                    <string>Стоп</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_15">
+                   <property name="text">
+                    <string>Сброс</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_16">
+                   <property name="text">
+                    <string>Шаг</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </widget>
           <widget class="QWidget" name="tab_5">
            <attribute name="title">
