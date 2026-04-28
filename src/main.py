@@ -7,6 +7,7 @@ from src.methods.gradient_descent import GradientDescentMethod
 from src.methods.wolfe_method import WolfeMethod
 from src.methods.genetic_algorithm import GeneticAlgorithm
 from src.methods.pso_method import PSOMethod
+from src.methods.bees_method import BeesMethod
 import numpy as np
 import sys
 import os
@@ -19,6 +20,7 @@ gd_method = None
 wolfe_method = None
 ga_method = None
 pso_method = None
+bees_method = None
 
 # Ограничения
 DEFAULT_CONSTRAINTS = {
@@ -408,6 +410,50 @@ def reset_pso():
         pso_method.reset()
     window.textEdit.append("Визуализация PSO очищена")
 
+#5
+def bees_optimization():
+    global bees_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        max_iter = int(window.lineEdit_18.text())
+        n_scouts = int(window.lineEdit_19.text())  # ← добавляем чтение количества пчел
+    except:
+        window.textEdit.append("Ошибка ввода параметров")
+        return
+
+    if bees_method is None:
+        bees_method = BeesMethod(view, current_func, current_zmin, current_zmax, window)
+    else:
+        bees_method.reset()
+        bees_method.set_function(current_func, current_zmin, current_zmax)
+
+    bees_method.update_bounds(
+        float(window.lineEdit.text()),
+        float(window.lineEdit_2.text()),
+        float(window.lineEdit_3.text()),
+        float(window.lineEdit_4.text())
+    )
+
+    bees_method.run(max_iter, n_scouts)  # ← передаём оба параметра
+
+
+def stop_bees():
+    global bees_method
+    if bees_method:
+        bees_method.stop()
+        window.textEdit.append("Пчелиный алгоритм остановлен")
+
+
+def reset_bees():
+    global bees_method
+    if bees_method:
+        bees_method.reset()
+    window.textEdit.append("Визуализация пчелиного алгоритма очищена")
+
 app = QApplication.instance()
 if app is None:
     app = QApplication(sys.argv)
@@ -435,7 +481,7 @@ axis.setSize(5, 5, 5)
 view.addItem(axis)
 
 point_item = gl.GLScatterPlotItem(
-    size=15,
+    size=1,
     color=(1, 0, 0, 1)
 )
 point_item.setGLOptions('opaque')
@@ -452,6 +498,11 @@ window.lineEdit_12.setText("1e-6")  # точность для Вулфа
 # Значения по умолчанию для PSO
 window.lineEdit_17.setText("30")
 window.lineEdit_16.setText("50")
+
+#bees
+window.lineEdit_18.setText("500")   #итерации
+window.lineEdit_19.setText("16")    # пчелы-разведчики
+
 window.radioButton_4.setChecked(False)
 window.radioButton_5.setChecked(False)
 window.radioButton_6.setChecked(False)
@@ -479,6 +530,11 @@ window.pushButton_13.clicked.connect(pso_optimization)   # Start
 window.pushButton_14.clicked.connect(stop_pso)           # Stop
 window.pushButton_15.clicked.connect(reset_pso)          # Reset
 window.pushButton_16.clicked.connect(pso_step)           # Step
+
+#Bees (5)
+window.pushButton_17.clicked.connect(bees_optimization)  # Start
+window.pushButton_18.clicked.connect(stop_bees)          # Stop
+window.pushButton_19.clicked.connect(reset_bees)         # Reset
 
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()
