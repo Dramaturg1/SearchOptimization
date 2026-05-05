@@ -471,6 +471,7 @@ class AISMethod:
         self.best_value = np.inf
         self.trajectory_points = []
 
+
         if self.antibodies_item:
             self.view.removeItem(self.antibodies_item)
             self.antibodies_item = None
