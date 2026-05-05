@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>933</width>
+    <width>991</width>
     <height>618</height>
    </rect>
   </property>
@@ -28,7 +28,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>4</number>
+           <number>5</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -549,6 +549,120 @@
            <attribute name="title">
             <string>6</string>
            </attribute>
+           <widget class="QGroupBox" name="groupBox_7">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>251</width>
+              <height>221</height>
+             </rect>
+            </property>
+            <property name="title">
+             <string>GroupBox</string>
+            </property>
+            <widget class="QWidget" name="">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>20</y>
+               <width>231</width>
+               <height>191</height>
+              </rect>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <layout class="QFormLayout" name="formLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_20">
+                  <property name="text">
+                   <string>Итераций</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="lineEdit_20"/>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_21">
+                  <property name="text">
+                   <string>Антител</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QLineEdit" name="lineEdit_21"/>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_22">
+                  <property name="text">
+                   <string>Кол-во лучших</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QLineEdit" name="lineEdit_22"/>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_23">
+                  <property name="text">
+                   <string>Кол-во случ. антител</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QLineEdit" name="lineEdit_23"/>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string>Количество клонов</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="QLineEdit" name="lineEdit_24"/>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="label_25">
+                  <property name="text">
+                   <string>Коэффициент мутации</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="1">
+                 <widget class="QLineEdit" name="lineEdit_25"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QFormLayout" name="formLayout_2">
+                <item row="0" column="0">
+                 <widget class="QPushButton" name="pushButton_20">
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QPushButton" name="pushButton_21">
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" colspan="2">
+                 <widget class="QPushButton" name="pushButton_22">
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
           </widget>
           <widget class="QWidget" name="tab_7">
            <attribute name="title">
@@ -807,7 +921,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>933</width>
+     <width>991</width>
      <height>33</height>
     </rect>
    </property>

@@ -8,6 +8,7 @@ from src.methods.wolfe_method import WolfeMethod
 from src.methods.genetic_algorithm import GeneticAlgorithm
 from src.methods.pso_method import PSOMethod
 from src.methods.bees_method import BeesMethod
+from src.methods.ais_method import AISMethod
 import numpy as np
 import sys
 import os
@@ -21,6 +22,7 @@ wolfe_method = None
 ga_method = None
 pso_method = None
 bees_method = None
+ais_method = None
 
 # Ограничения
 DEFAULT_CONSTRAINTS = {
@@ -454,6 +456,75 @@ def reset_bees():
         bees_method.reset()
     window.textEdit.append("Визуализация пчелиного алгоритма очищена")
 
+
+def start_ais():
+    """Запуск алгоритма иммунной сети"""
+    global ais_method, current_func, current_zmin, current_zmax
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        # Получение параметров из UI
+        max_iter_text = window.lineEdit_20.text()
+        max_iter = int(max_iter_text) if max_iter_text else 100
+
+        n_antibodies_text = window.lineEdit_21.text()
+        n_antibodies = int(n_antibodies_text) if n_antibodies_text else 50
+
+        n_best_text = window.lineEdit_22.text()
+        n_best = int(n_best_text) if n_best_text else 10
+
+        n_random_text = window.lineEdit_23.text()
+        n_random = int(n_random_text) if n_random_text else 5
+
+        n_clones_text = window.lineEdit_24.text()
+        n_clones = int(n_clones_text) if n_clones_text else 10
+
+        mutation_rate_text = window.lineEdit_25.text()
+        mutation_rate = float(mutation_rate_text) if mutation_rate_text else 0.5
+
+        # Обновление границ из полей ввода
+        xmin = float(window.lineEdit.text()) if window.lineEdit.text() else -5
+        xmax = float(window.lineEdit_2.text()) if window.lineEdit_2.text() else 5
+        ymin = float(window.lineEdit_3.text()) if window.lineEdit_3.text() else -5
+        ymax = float(window.lineEdit_4.text()) if window.lineEdit_4.text() else 5
+
+        # Создаем или сбрасываем метод
+        if ais_method is None:
+            ais_method = AISMethod(view, current_func, current_zmin, current_zmax, point_item, window)
+        else:
+            ais_method.reset()
+            ais_method.set_function(current_func, current_zmin, current_zmax)
+
+        ais_method.update_bounds(xmin, xmax, ymin, ymax)
+        ais_method.set_parameters(n_antibodies, max_iter, n_best, n_random, n_clones, mutation_rate)
+
+        # Запуск
+        ais_method.run()
+
+    except ValueError as e:
+        window.textEdit.append(f"Ошибка в параметрах: {e}")
+    except Exception as e:
+        window.textEdit.append(f"Ошибка: {e}")
+
+
+def stop_ais():
+    """Остановка алгоритма"""
+    global ais_method
+    if ais_method:
+        ais_method.stop()
+        window.textEdit.append("Алгоритм иммунной сети остановлен")
+
+
+def reset_ais():
+    """Сброс визуализации"""
+    global ais_method
+    if ais_method:
+        ais_method.reset()
+        window.textEdit.append("Визуализация иммунного алгоритма сброшена")
+
 app = QApplication.instance()
 if app is None:
     app = QApplication(sys.argv)
@@ -535,6 +606,10 @@ window.pushButton_16.clicked.connect(pso_step)           # Step
 window.pushButton_17.clicked.connect(bees_optimization)  # Start
 window.pushButton_18.clicked.connect(stop_bees)          # Stop
 window.pushButton_19.clicked.connect(reset_bees)         # Reset
+
+window.pushButton_20.clicked.connect(start_ais)  # Запуск
+window.pushButton_21.clicked.connect(stop_ais)   # Стоп
+window.pushButton_22.clicked.connect(reset_ais)  # Сброс
 
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()
