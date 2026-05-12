@@ -7,11 +7,6 @@ import random
 
 
 class AISMethod:
-    """
-    Алгоритм искусственной иммунной сети (Artificial Immune System)
-    для глобальной оптимизации функций
-    """
-
     def __init__(self, view, current_func, current_zmin, current_zmax, point_item, window):
         self.view = view
         self.current_func = current_func

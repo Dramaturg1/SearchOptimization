@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>991</width>
+    <width>872</width>
     <height>618</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,1">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0">
       <property name="sizeConstraint">
        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
       </property>
@@ -24,11 +24,11 @@
        <widget class="QWidget" name="widget" native="true"/>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,2,2">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,2">
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>5</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -561,13 +561,13 @@
             <property name="title">
              <string>GroupBox</string>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <property name="geometry">
               <rect>
                <x>10</x>
                <y>20</y>
                <width>231</width>
-               <height>191</height>
+               <height>256</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -668,6 +668,99 @@
            <attribute name="title">
             <string>7</string>
            </attribute>
+           <widget class="QWidget" name="layoutWidget_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>321</width>
+              <height>221</height>
+             </rect>
+            </property>
+            <layout class="QFormLayout" name="formLayout_3">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_26">
+               <property name="text">
+                <string>Бактерий</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="lineEdit_26"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_27">
+               <property name="text">
+                <string>Шагов хемотаксиса</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="lineEdit_27"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>Шагов репродукции</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="lineEdit_28"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_29">
+               <property name="text">
+                <string>Шагов ликвидации</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="lineEdit_29"/>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_30">
+               <property name="text">
+                <string>Шаг</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QLineEdit" name="lineEdit_30"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_31">
+               <property name="text">
+                <string>Вероятность ликвидации</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QLineEdit" name="lineEdit_31"/>
+             </item>
+             <item row="8" column="1">
+              <widget class="QPushButton" name="pushButton_25">
+               <property name="text">
+                <string>Reset</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QPushButton" name="pushButton_23">
+               <property name="text">
+                <string>Start</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QPushButton" name="pushButton_24">
+               <property name="text">
+                <string>Stop</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
           <widget class="QWidget" name="tab_8">
            <attribute name="title">
@@ -711,6 +804,11 @@
              <item>
               <property name="text">
                <string>Функция Растригина</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Функция гиперсферы</string>
               </property>
              </item>
              <item>
@@ -921,7 +1019,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>991</width>
+     <width>872</width>
      <height>33</height>
     </rect>
    </property>

@@ -9,6 +9,7 @@ from src.methods.genetic_algorithm import GeneticAlgorithm
 from src.methods.pso_method import PSOMethod
 from src.methods.bees_method import BeesMethod
 from src.methods.ais_method import AISMethod
+from src.methods.bfo_method import BFOMethod
 import numpy as np
 import sys
 import os
@@ -23,6 +24,7 @@ ga_method = None
 pso_method = None
 bees_method = None
 ais_method = None
+bfo_method = None
 
 # Ограничения
 DEFAULT_CONSTRAINTS = {
@@ -525,6 +527,57 @@ def reset_ais():
         ais_method.reset()
         window.textEdit.append("Визуализация иммунного алгоритма сброшена")
 
+def bfo_optimization():
+    global bfo_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        n_bacteria = int(window.lineEdit_20.text())
+        chemotaxis_steps = int(window.lineEdit_21.text())
+        reproduction_steps = int(window.lineEdit_22.text())
+        elimination_steps = int(window.lineEdit_23.text())
+        step_size = float(window.lineEdit_24.text())
+        elimination_prob = float(window.lineEdit_25.text())
+    except:
+        window.textEdit.append("Ошибка ввода параметров BFO")
+        return
+
+    if bfo_method is None:
+        bfo_method = BFOMethod(view, current_func, current_zmin, current_zmax, point_item, window)
+    else:
+        bfo_method.reset()
+        bfo_method.set_function(current_func, current_zmin, current_zmax)
+
+    bfo_method.set_parameters(n_bacteria, chemotaxis_steps, reproduction_steps,
+                              elimination_steps, step_size, elimination_prob)
+    bfo_method.update_bounds(
+        float(window.lineEdit.text()),
+        float(window.lineEdit_2.text()),
+        float(window.lineEdit_3.text()),
+        float(window.lineEdit_4.text())
+    )
+
+    bfo_method.run()
+
+
+def stop_bfo():
+    global bfo_method
+    if bfo_method:
+        bfo_method.stop()
+        window.textEdit.append("BFO остановлен")
+
+
+def reset_bfo():
+    global bfo_method
+    if bfo_method:
+        bfo_method.reset()
+    window.textEdit.append("Визуализация BFO очищена")
+
+
+
 app = QApplication.instance()
 if app is None:
     app = QApplication(sys.argv)
@@ -540,7 +593,6 @@ if layout is None:
     layout = QVBoxLayout(window.widget)
     window.widget.setLayout(layout)
 layout.addWidget(view)
-
 grid = gl.GLGridItem()
 grid.setSize(10, 10)
 grid.setSpacing(1, 1)
@@ -571,8 +623,15 @@ window.lineEdit_17.setText("30")
 window.lineEdit_16.setText("50")
 
 #bees
-window.lineEdit_18.setText("500")   #итерации
+window.lineEdit_18.setText("500")   #итерации5
 window.lineEdit_19.setText("16")    # пчелы-разведчики
+
+window.lineEdit_20.setText("20")   # бактерий
+window.lineEdit_21.setText("50")   # шагов хемотаксиса
+window.lineEdit_22.setText("4")    # шагов репродукции
+window.lineEdit_23.setText("2")    # шагов ликвидации
+window.lineEdit_24.setText("0.1")  # шаг
+window.lineEdit_25.setText("0.25") # вероятность ликвидации
 
 window.radioButton_4.setChecked(False)
 window.radioButton_5.setChecked(False)
@@ -610,6 +669,10 @@ window.pushButton_19.clicked.connect(reset_bees)         # Reset
 window.pushButton_20.clicked.connect(start_ais)  # Запуск
 window.pushButton_21.clicked.connect(stop_ais)   # Стоп
 window.pushButton_22.clicked.connect(reset_ais)  # Сброс
+
+window.pushButton_23.clicked.connect(bfo_optimization)  # Start
+window.pushButton_24.clicked.connect(stop_bfo)          # Stop
+window.pushButton_25.clicked.connect(reset_bfo)         # Reset
 
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()
