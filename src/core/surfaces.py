@@ -84,6 +84,14 @@ def sinusoidal_ripples(X, Y):
 def screwed_egg(X, Y):
     return 3*(1-X)**2*np.exp(-X**2-(Y+1)**2)-10*(X/5-X**3-Y**5)*np.exp(-X**2-Y**2)-1/3*np.exp(-(X+1)**2-Y**2)
 
+def hypersphere(X, Y):
+    """Гиперсфера (обратная сферическая функция) - для максимизации"""
+    return -(X**2 + Y**2)
+
+def hypersphere_positive(X, Y):
+    """Гиперсфера с положительным максимумом"""
+    return 100 - (X**2 + Y**2)  # максимум 100 в точке (0,0)
+
 surface_data = {
     "Функция Била": {
         "func": beale,
@@ -308,5 +316,13 @@ surface_data = {
         "ymin": -10,
         "ymax": 10,
         "points": 600
-    }
+    },
+    "Функция гиперсферы": {
+        "func": hypersphere,
+        "xmin": -5,
+        "xmax": 5,
+        "ymin": -5,
+        "ymax": 5,
+        "points": 300
+    },
 }

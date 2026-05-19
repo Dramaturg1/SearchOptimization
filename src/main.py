@@ -6,6 +6,11 @@ from src.core.surfaces import surface_data
 from src.methods.gradient_descent import GradientDescentMethod
 from src.methods.wolfe_method import WolfeMethod
 from src.methods.genetic_algorithm import GeneticAlgorithm
+from src.methods.pso_method import PSOMethod
+from src.methods.bees_method import BeesMethod
+from src.methods.ais_method import AISMethod
+from src.methods.bfo_method import BFOMethod
+from src.methods.hybrid_ga_pso import HybridGA_PSO
 import numpy as np
 import sys
 import os
@@ -17,6 +22,11 @@ current_zmax = None
 gd_method = None
 wolfe_method = None
 ga_method = None
+pso_method = None
+bees_method = None
+ais_method = None
+bfo_method = None
+hybrid_method = None
 
 # Ограничения
 DEFAULT_CONSTRAINTS = {
@@ -328,6 +338,291 @@ def reset_ga():
     if ga_method:
         ga_method.reset()
 
+def pso_optimization():
+    global pso_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        n_particles = int(window.lineEdit_17.text())
+        max_iter = int(window.lineEdit_16.text())
+    except:
+        window.textEdit.append("Ошибка ввода параметров PSO")
+        return
+
+    if pso_method is None:
+        pso_method = PSOMethod(view, current_func, current_zmin, current_zmax, window)
+    else:
+        pso_method.reset()
+        pso_method.set_function(current_func, current_zmin, current_zmax)
+
+    pso_method.use_mutation = window.radioButton_4.isChecked()      # ← radioButton_4
+    pso_method.use_crossover = window.radioButton_5.isChecked()     # ← radioButton_5
+    pso_method.use_convergence = window.radioButton_6.isChecked()   # ← radioButton_6
+    pso_method.update_bounds(
+        float(window.lineEdit.text()),
+        float(window.lineEdit_2.text()),
+        float(window.lineEdit_3.text()),
+        float(window.lineEdit_4.text())
+    )
+
+    pso_method.run(n_particles, max_iter)
+
+def pso_step():
+    global pso_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    if pso_method is None:
+        try:
+            n_particles = int(window.lineEdit_17.text())
+            max_iter = int(window.lineEdit_16.text())
+        except:
+            window.textEdit.append("Ошибка ввода параметров PSO")
+            return
+
+        pso_method = PSOMethod(view, current_func, current_zmin, current_zmax, window)
+        pso_method.set_function(current_func, current_zmin, current_zmax)
+        pso_method.use_mutation = window.radioButton_4.isChecked()    # ← radioButton_4
+        pso_method.use_crossover = window.radioButton_5.isChecked()   # ← radioButton_5
+        pso_method.use_convergence = window.radioButton_6.isChecked() # ← radioButton_6
+        pso_method.update_bounds(
+            float(window.lineEdit.text()),
+            float(window.lineEdit_2.text()),
+            float(window.lineEdit_3.text()),
+            float(window.lineEdit_4.text())
+        )
+        pso_method.run_step_mode(n_particles, max_iter)
+    else:
+        if hasattr(pso_method, 'step_mode') and pso_method.step_mode:
+            pso_method.step()
+        else:
+            window.textEdit.append("Пошаговый режим не активен. Нажмите 'Старт' для запуска.")
+
+
+def stop_pso():
+    global pso_method
+    if pso_method:
+        pso_method.stop()
+        window.textEdit.append("PSO остановлен")
+
+def reset_pso():
+    global pso_method
+    if pso_method:
+        pso_method.reset()
+    window.textEdit.append("Визуализация PSO очищена")
+
+#5
+def bees_optimization():
+    global bees_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        max_iter = int(window.lineEdit_18.text())
+        n_scouts = int(window.lineEdit_19.text())  # ← добавляем чтение количества пчел
+    except:
+        window.textEdit.append("Ошибка ввода параметров")
+        return
+
+    if bees_method is None:
+        bees_method = BeesMethod(view, current_func, current_zmin, current_zmax, window)
+    else:
+        bees_method.reset()
+        bees_method.set_function(current_func, current_zmin, current_zmax)
+
+    bees_method.update_bounds(
+        float(window.lineEdit.text()),
+        float(window.lineEdit_2.text()),
+        float(window.lineEdit_3.text()),
+        float(window.lineEdit_4.text())
+    )
+
+    bees_method.run(max_iter, n_scouts)  # ← передаём оба параметра
+
+
+def stop_bees():
+    global bees_method
+    if bees_method:
+        bees_method.stop()
+        window.textEdit.append("Пчелиный алгоритм остановлен")
+
+
+def reset_bees():
+    global bees_method
+    if bees_method:
+        bees_method.reset()
+    window.textEdit.append("Визуализация пчелиного алгоритма очищена")
+
+
+def start_ais():
+    """Запуск алгоритма иммунной сети"""
+    global ais_method, current_func, current_zmin, current_zmax
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        # Получение параметров из UI
+        max_iter_text = window.lineEdit_20.text()
+        max_iter = int(max_iter_text) if max_iter_text else 100
+
+        n_antibodies_text = window.lineEdit_21.text()
+        n_antibodies = int(n_antibodies_text) if n_antibodies_text else 50
+
+        n_best_text = window.lineEdit_22.text()
+        n_best = int(n_best_text) if n_best_text else 10
+
+        n_random_text = window.lineEdit_23.text()
+        n_random = int(n_random_text) if n_random_text else 5
+
+        n_clones_text = window.lineEdit_24.text()
+        n_clones = int(n_clones_text) if n_clones_text else 10
+
+        mutation_rate_text = window.lineEdit_25.text()
+        mutation_rate = float(mutation_rate_text) if mutation_rate_text else 0.5
+
+        # Обновление границ из полей ввода
+        xmin = float(window.lineEdit.text()) if window.lineEdit.text() else -5
+        xmax = float(window.lineEdit_2.text()) if window.lineEdit_2.text() else 5
+        ymin = float(window.lineEdit_3.text()) if window.lineEdit_3.text() else -5
+        ymax = float(window.lineEdit_4.text()) if window.lineEdit_4.text() else 5
+
+        # Создаем или сбрасываем метод
+        if ais_method is None:
+            ais_method = AISMethod(view, current_func, current_zmin, current_zmax, point_item, window)
+        else:
+            ais_method.reset()
+            ais_method.set_function(current_func, current_zmin, current_zmax)
+
+        ais_method.update_bounds(xmin, xmax, ymin, ymax)
+        ais_method.set_parameters(n_antibodies, max_iter, n_best, n_random, n_clones, mutation_rate)
+
+        # Запуск
+        ais_method.run()
+
+    except ValueError as e:
+        window.textEdit.append(f"Ошибка в параметрах: {e}")
+    except Exception as e:
+        window.textEdit.append(f"Ошибка: {e}")
+
+
+def stop_ais():
+    """Остановка алгоритма"""
+    global ais_method
+    if ais_method:
+        ais_method.stop()
+        window.textEdit.append("Алгоритм иммунной сети остановлен")
+
+
+def reset_ais():
+    """Сброс визуализации"""
+    global ais_method
+    if ais_method:
+        ais_method.reset()
+        window.textEdit.append("Визуализация иммунного алгоритма сброшена")
+
+def bfo_optimization():
+    global bfo_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        n_bacteria = int(window.lineEdit_20.text())
+        chemotaxis_steps = int(window.lineEdit_21.text())
+        reproduction_steps = int(window.lineEdit_22.text())
+        elimination_steps = int(window.lineEdit_23.text())
+        step_size = float(window.lineEdit_24.text())
+        elimination_prob = float(window.lineEdit_25.text())
+    except:
+        window.textEdit.append("Ошибка ввода параметров BFO")
+        return
+
+    if bfo_method is None:
+        bfo_method = BFOMethod(view, current_func, current_zmin, current_zmax, point_item, window)
+    else:
+        bfo_method.reset()
+        bfo_method.set_function(current_func, current_zmin, current_zmax)
+
+    bfo_method.set_parameters(n_bacteria, chemotaxis_steps, reproduction_steps,
+                              elimination_steps, step_size, elimination_prob)
+    bfo_method.update_bounds(
+        float(window.lineEdit.text()),
+        float(window.lineEdit_2.text()),
+        float(window.lineEdit_3.text()),
+        float(window.lineEdit_4.text())
+    )
+
+    bfo_method.run()
+
+
+def stop_bfo():
+    global bfo_method
+    if bfo_method:
+        bfo_method.stop()
+        window.textEdit.append("BFO остановлен")
+
+
+def reset_bfo():
+    global bfo_method
+    if bfo_method:
+        bfo_method.reset()
+    window.textEdit.append("Визуализация BFO очищена")
+
+def hybrid_optimization():
+    global hybrid_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        ga_generations = int(window.lineEdit_32.text())
+        pso_iterations = int(window.lineEdit_33.text())
+        ga_pop_size = int(window.lineEdit_34.text())
+        pso_particles = int(window.lineEdit_35.text())
+
+        xmin = float(window.lineEdit.text())
+        xmax = float(window.lineEdit_2.text())
+        ymin = float(window.lineEdit_3.text())
+        ymax = float(window.lineEdit_4.text())
+
+    except ValueError as e:
+        window.textEdit.append(f"Ошибка ввода параметров: {e}")
+        return
+
+    if hybrid_method is None:
+        hybrid_method = HybridGA_PSO(view, current_func, current_zmin, current_zmax, point_item, window)
+    else:
+        hybrid_method.reset()
+        hybrid_method.set_function(current_func, current_zmin, current_zmax)
+
+    hybrid_method.update_bounds(xmin, xmax, ymin, ymax)
+    hybrid_method.set_parameters(ga_pop_size, ga_generations, pso_particles, pso_iterations)
+
+    hybrid_method.run()
+
+
+def stop_hybrid():
+    global hybrid_method
+    if hybrid_method:
+        hybrid_method.stop()
+
+
+def reset_hybrid():
+    global hybrid_method
+    if hybrid_method:
+        hybrid_method.reset()
+
 
 
 app = QApplication.instance()
@@ -345,7 +640,6 @@ if layout is None:
     layout = QVBoxLayout(window.widget)
     window.widget.setLayout(layout)
 layout.addWidget(view)
-
 grid = gl.GLGridItem()
 grid.setSize(10, 10)
 grid.setSpacing(1, 1)
@@ -357,7 +651,7 @@ axis.setSize(5, 5, 5)
 view.addItem(axis)
 
 point_item = gl.GLScatterPlotItem(
-    size=15,
+    size=1,
     color=(1, 0, 0, 1)
 )
 point_item.setGLOptions('opaque')
@@ -370,6 +664,25 @@ window.lineEdit_9.setText("2")      # x0 для метода Вулфа
 window.lineEdit_10.setText("2")     # y0 для метода Вулфа
 window.lineEdit_11.setText("50")    # макс итераций для Вулфа
 window.lineEdit_12.setText("1e-6")  # точность для Вулфа
+
+# Значения по умолчанию для PSO
+window.lineEdit_17.setText("30")
+window.lineEdit_16.setText("50")
+
+#bees
+window.lineEdit_18.setText("500")   #итерации5
+window.lineEdit_19.setText("16")    # пчелы-разведчики
+
+window.lineEdit_20.setText("20")   # бактерий
+window.lineEdit_21.setText("50")   # шагов хемотаксиса
+window.lineEdit_22.setText("4")    # шагов репродукции
+window.lineEdit_23.setText("2")    # шагов ликвидации
+window.lineEdit_24.setText("0.1")  # шаг
+window.lineEdit_25.setText("0.25") # вероятность ликвидации
+
+window.radioButton_4.setChecked(False)
+window.radioButton_5.setChecked(False)
+window.radioButton_6.setChecked(False)
 
 # Подключение сигналов
 window.pushButton.clicked.connect(update_surface)  # Построить
@@ -388,6 +701,34 @@ window.pushButton_9.clicked.connect(wolfe_step)  # Шаг
 window.pushButton_10.clicked.connect(genetic_algorithm_run)
 window.pushButton_11.clicked.connect(stop_ga)  # Остановка
 window.pushButton_12.clicked.connect(reset_ga)
+
+# PSO (вкладка 4)
+window.pushButton_13.clicked.connect(pso_optimization)   # Start
+window.pushButton_14.clicked.connect(stop_pso)           # Stop
+window.pushButton_15.clicked.connect(reset_pso)          # Reset
+window.pushButton_16.clicked.connect(pso_step)           # Step
+
+#Bees (5)
+window.pushButton_17.clicked.connect(bees_optimization)  # Start
+window.pushButton_18.clicked.connect(stop_bees)          # Stop
+window.pushButton_19.clicked.connect(reset_bees)         # Reset
+
+window.pushButton_20.clicked.connect(start_ais)  # Запуск
+window.pushButton_21.clicked.connect(stop_ais)   # Стоп
+window.pushButton_22.clicked.connect(reset_ais)  # Сброс
+
+window.pushButton_23.clicked.connect(bfo_optimization)  # Start
+window.pushButton_24.clicked.connect(stop_bfo)          # Stop
+window.pushButton_25.clicked.connect(reset_bfo)         # Reset
+
+window.pushButton_26.clicked.connect(hybrid_optimization)  # Запуск
+window.pushButton_27.clicked.connect(stop_hybrid)         # Стоп
+window.pushButton_28.clicked.connect(reset_hybrid)
+
+window.lineEdit_32.setText("100")  # GA поколения
+window.lineEdit_33.setText("50")   # PSO итерации
+window.lineEdit_34.setText("50")   # GA размер популяции
+window.lineEdit_35.setText("30")   # PSO частиц
 
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()
