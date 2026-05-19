@@ -10,6 +10,7 @@ from src.methods.pso_method import PSOMethod
 from src.methods.bees_method import BeesMethod
 from src.methods.ais_method import AISMethod
 from src.methods.bfo_method import BFOMethod
+from src.methods.hybrid_ga_pso import HybridGA_PSO
 import numpy as np
 import sys
 import os
@@ -25,6 +26,7 @@ pso_method = None
 bees_method = None
 ais_method = None
 bfo_method = None
+hybrid_method = None
 
 # Ограничения
 DEFAULT_CONSTRAINTS = {
@@ -576,6 +578,51 @@ def reset_bfo():
         bfo_method.reset()
     window.textEdit.append("Визуализация BFO очищена")
 
+def hybrid_optimization():
+    global hybrid_method
+
+    if current_func is None:
+        window.textEdit.append("Сначала постройте поверхность")
+        return
+
+    try:
+        ga_generations = int(window.lineEdit_32.text())
+        pso_iterations = int(window.lineEdit_33.text())
+        ga_pop_size = int(window.lineEdit_34.text())
+        pso_particles = int(window.lineEdit_35.text())
+
+        xmin = float(window.lineEdit.text())
+        xmax = float(window.lineEdit_2.text())
+        ymin = float(window.lineEdit_3.text())
+        ymax = float(window.lineEdit_4.text())
+
+    except ValueError as e:
+        window.textEdit.append(f"Ошибка ввода параметров: {e}")
+        return
+
+    if hybrid_method is None:
+        hybrid_method = HybridGA_PSO(view, current_func, current_zmin, current_zmax, point_item, window)
+    else:
+        hybrid_method.reset()
+        hybrid_method.set_function(current_func, current_zmin, current_zmax)
+
+    hybrid_method.update_bounds(xmin, xmax, ymin, ymax)
+    hybrid_method.set_parameters(ga_pop_size, ga_generations, pso_particles, pso_iterations)
+
+    hybrid_method.run()
+
+
+def stop_hybrid():
+    global hybrid_method
+    if hybrid_method:
+        hybrid_method.stop()
+
+
+def reset_hybrid():
+    global hybrid_method
+    if hybrid_method:
+        hybrid_method.reset()
+
 
 
 app = QApplication.instance()
@@ -673,6 +720,15 @@ window.pushButton_22.clicked.connect(reset_ais)  # Сброс
 window.pushButton_23.clicked.connect(bfo_optimization)  # Start
 window.pushButton_24.clicked.connect(stop_bfo)          # Stop
 window.pushButton_25.clicked.connect(reset_bfo)         # Reset
+
+window.pushButton_26.clicked.connect(hybrid_optimization)  # Запуск
+window.pushButton_27.clicked.connect(stop_hybrid)         # Стоп
+window.pushButton_28.clicked.connect(reset_hybrid)
+
+window.lineEdit_32.setText("100")  # GA поколения
+window.lineEdit_33.setText("50")   # PSO итерации
+window.lineEdit_34.setText("50")   # GA размер популяции
+window.lineEdit_35.setText("30")   # PSO частиц
 
 window.comboBox.setCurrentText("Тестовая функция (методичка)")
 on_function_changed()

@@ -28,7 +28,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget">
           <property name="currentIndex">
-           <number>6</number>
+           <number>7</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -674,7 +674,7 @@
               <x>0</x>
               <y>0</y>
               <width>321</width>
-              <height>221</height>
+              <height>258</height>
              </rect>
             </property>
             <layout class="QFormLayout" name="formLayout_3">
@@ -766,6 +766,79 @@
            <attribute name="title">
             <string>8</string>
            </attribute>
+           <widget class="QWidget" name="">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>311</width>
+              <height>211</height>
+             </rect>
+            </property>
+            <layout class="QFormLayout" name="formLayout_4">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_32">
+               <property name="text">
+                <string>Число поколений GA</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="lineEdit_32"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_33">
+               <property name="text">
+                <string>Число итераций PSO</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="lineEdit_33"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_34">
+               <property name="text">
+                <string>Размер популяции GA</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="lineEdit_34"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_35">
+               <property name="text">
+                <string>Количество частиц PSO</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="lineEdit_35"/>
+             </item>
+             <item row="4" column="0">
+              <widget class="QPushButton" name="pushButton_26">
+               <property name="text">
+                <string>Старт</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QPushButton" name="pushButton_27">
+               <property name="text">
+                <string>Стоп</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QPushButton" name="pushButton_28">
+               <property name="text">
+                <string>Сброс</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </widget>
         </item>
